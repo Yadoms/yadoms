@@ -24,8 +24,8 @@ std::string CTeleInfoConfiguration::getSerialPort() const
 EEquipmentType CTeleInfoConfiguration::getEquipmentType() const
 {
    try {
-      std::string temp = m_data->get<std::string>("EquipmentType.activeSectionText");
-      if (temp == "1xTIC")
+      std::string temp = m_data->get<std::string>("EquipmentType.activeSection");
+      if (temp == "first")
          return OneInput;
       else
          return TwoInputs;

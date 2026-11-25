@@ -28,161 +28,157 @@
       }
     },
     "Protocols": {
-      "type": "section",
-      "enableWithCheckBox": "false",
-      "checkbox": {
-        "defaultValue": false
-      },
+      "type": "multiSelectSection",
       "content": {
         "AE Blyss": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "Rubicson": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "FineOffset/Viking": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "Lighting4": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "RSL": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "Byron SX": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "Imagintronix": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "undecoded messages": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "Mertik": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "AD LightwaveRF": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "Hideki/UPM": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "La Crosse": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "LegrandCAD": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "BlindsT0": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "BlindsT1": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "X10": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "ARC": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "AC": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "HomeEasy EU": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "Meiantech": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "Oregon Scientific": {
           "type": "bool",
-          "defaultValue": "true"
+          "defaultValue": true
         },
         "ATI": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "Visonic": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "KeeLoq": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "HomeConfort": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "MCZ": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         },
         "Funkbus": {
           "type": "bool",
-          "defaultValue": "false"
+          "defaultValue": false
         }
       }
     }
   },
-  "supportManuallyDeviceCreation": "true",
+  "supportManuallyDeviceCreation": true,
   "deviceConfiguration": {
     "staticConfigurationSchema": {
       "schemas": {
         "hcA_P-uc1_16": {
           "types": {
             "x10": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "ARC": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "ab400d": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "waveman": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "emw200": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "impuls": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "risingSun": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "philips": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "energenie": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "energenie5": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "harrisonCurtain": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
@@ -193,18 +189,18 @@
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "16"
+              "minimumValue": 1,
+              "maximumValue": 16
             }
           }
         },
         "hcA_D-uc1_4": {
           "types": {
             "gdr2": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "hqCoco20": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
@@ -215,15 +211,15 @@
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "4"
+              "minimumValue": 1,
+              "maximumValue": 4
             }
           }
         },
         "hcA_D-uc1_3": {
           "types": {
             "oase": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
@@ -234,52 +230,52 @@
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "3"
+              "minimumValue": 1,
+              "maximumValue": 3
             }
           }
         },
         "id1_67108863-unitCode1_16": {
           "types": {
             "smartwares": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "67108863"
+              "minimumValue": 1,
+              "maximumValue": 67108863
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "16"
+              "minimumValue": 1,
+              "maximumValue": 16
             }
           }
         },
         "id1_67108863-unitCode1_16-onOffOrDimmable": {
           "types": {
             "AC": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "homeEasyEU": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "anslut": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "67108863"
+              "minimumValue": 1,
+              "maximumValue": 67108863
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "16"
+              "minimumValue": 1,
+              "maximumValue": 16
             },
             "type": {
               "type": "enum",
@@ -293,7 +289,7 @@
         "id1_16777215-unitCode1_5": {
           "types": {
             "kambrookRf3672": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
@@ -304,388 +300,388 @@
             },
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "16777215"
+              "minimumValue": 1,
+              "maximumValue": 16777215
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "5"
+              "minimumValue": 1,
+              "maximumValue": 5
             }
           }
         },
         "id1_16777215-unitCode1_6": {
           "types": {
             "sunperyBtx": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "16777215"
+              "minimumValue": 1,
+              "maximumValue": 16777215
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "6"
+              "minimumValue": 1,
+              "maximumValue": 6
             }
           }
         },
         "id1_16777215-unitCode1_15": {
           "types": {
             "aOkAc114": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "16777215"
+              "minimumValue": 1,
+              "maximumValue": 16777215
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "15"
+              "minimumValue": 1,
+              "maximumValue": 15
             }
           }
         },
         "s0_16-c0_1023": {
           "types": {
             "koppla": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "system": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "16"
+              "minimumValue": 0,
+              "maximumValue": 16
             },
             "channel": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "1023"
+              "minimumValue": 0,
+              "maximumValue": 1023
             }
           }
         },
         "id0_16777215": {
           "types": {
             "pt2262": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "mcz1PelletStove": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "mcz2PelletStove": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "mcz3PelletStove": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "meiantech": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "16777215"
+              "minimumValue": 0,
+              "maximumValue": 16777215
             }
           }
         },
         "id1_16777215-unitCode1_16": {
           "types": {
             "lightwaveRf": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "rsl": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "hualite": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "16777215"
+              "minimumValue": 1,
+              "maximumValue": 16777215
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "16"
+              "minimumValue": 1,
+              "maximumValue": 16
             }
           }
         },
         "id1_16383-unitCode1_4": {
           "types": {
             "emw100": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "16383"
+              "minimumValue": 1,
+              "maximumValue": 16383
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "4"
+              "minimumValue": 1,
+              "maximumValue": 4
             }
           }
         },
         "id1_524287-unitCode1_6": {
           "types": {
             "bbsb": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "524287"
+              "minimumValue": 1,
+              "maximumValue": 524287
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "6"
+              "minimumValue": 1,
+              "maximumValue": 6
             }
           }
         },
         "id0_16": {
           "types": {
             "lucciAir": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "westinghouse7226640": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "16"
+              "minimumValue": 0,
+              "maximumValue": 16
             }
           }
         },
         "id0_255": {
           "types": {
             "byronSx": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "255"
+              "minimumValue": 0,
+              "maximumValue": 255
             }
           }
         },
         "id0_1023": {
           "types": {
             "selectPlus": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "1023"
+              "minimumValue": 0,
+              "maximumValue": 1023
             }
           }
         },
         "id0_65535": {
           "types": {
             "byronMp001": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "envivo": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "x10SecurityRemote": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "digimax": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "digimaxShort": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "65535"
+              "minimumValue": 0,
+              "maximumValue": 65535
             }
           }
         },
         "id1_65535": {
           "types": {
             "mdRemote106": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "livolo": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "aoke": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "rgb432w": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "mdremote107": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "legrandCad": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "it": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "mdRemote108": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "65535"
+              "minimumValue": 1,
+              "maximumValue": 65535
             }
           }
         },
         "id1_1048575": {
           "types": {
             "avantek": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "1048575"
+              "minimumValue": 1,
+              "maximumValue": 1048575
             }
           }
         },
         "id1_16777215": {
           "types": {
             "trc02": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "aOkRf01": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "raex": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "mediaMount": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "dolatDlm1": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "asp": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "16777215"
+              "minimumValue": 1,
+              "maximumValue": 16777215
             }
           }
         },
         "id0_32767": {
           "types": {
             "siemensSf01": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "32767"
+              "minimumValue": 0,
+              "maximumValue": 32767
             }
           }
         },
         "id1_32767": {
           "types": {
             "trc02_2": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "32767"
+              "minimumValue": 1,
+              "maximumValue": 32767
             }
           }
         },
         "id1_524287-unitCode1_4": {
           "types": {
             "eurodomest": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "524287"
+              "minimumValue": 1,
+              "maximumValue": 524287
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "4"
+              "minimumValue": 1,
+              "maximumValue": 4
             }
           }
         },
         "id1_32767-unitCode1_10": {
           "types": {
             "livolo1to10": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "32767"
+              "minimumValue": 1,
+              "maximumValue": 32767
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "10"
+              "minimumValue": 1,
+              "maximumValue": 10
             }
           }
         },
         "id0_65535-gcA_P-uc1_5": {
           "types": {
             "blyss": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "65535"
+              "minimumValue": 0,
+              "maximumValue": 65535
             },
             "groupCode": {
               "type": "string",
@@ -694,46 +690,46 @@
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "5"
+              "minimumValue": 1,
+              "maximumValue": 5
             }
           }
         },
         "id0_65535-gc0_3-uc1_8": {
           "types": {
             "cuveo": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "65535"
+              "minimumValue": 0,
+              "maximumValue": 65535
             },
             "groupCode": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "3"
+              "minimumValue": 0,
+              "maximumValue": 3
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "8"
+              "minimumValue": 1,
+              "maximumValue": 8
             }
           }
         },
         "id0_65535-gcA_C-uc1_8": {
           "types": {
             "funkbus": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "65535"
+              "minimumValue": 0,
+              "maximumValue": 65535
             },
             "groupCode": {
               "type": "string",
@@ -742,15 +738,15 @@
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "8"
+              "minimumValue": 1,
+              "maximumValue": 8
             }
           }
         },
         "seavTxs4": {
           "types": {
             "seavTxs4": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
@@ -762,8 +758,8 @@
             },
             "id": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "32767"
+              "minimumValue": 0,
+              "maximumValue": 32767
             }
           }
         },
@@ -771,19 +767,19 @@
         "id1_65535-uc1_6": {
           "types": {
             "zemismart": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "65535"
+              "minimumValue": 1,
+              "maximumValue": 65535
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "6"
+              "minimumValue": 1,
+              "maximumValue": 6
             }
           }
         },
@@ -791,25 +787,25 @@
         "id1_65535-uc1_15": {
           "types": {
             "rollerTrolHastaNew": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "hastaOld": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "confexx": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "65535"
+              "minimumValue": 1,
+              "maximumValue": 65535
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "15"
+              "minimumValue": 1,
+              "maximumValue": 15
             }
           }
         },
@@ -817,19 +813,19 @@
         "id1_65535-uc1_30": {
           "types": {
             "kangtai": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "65535"
+              "minimumValue": 1,
+              "maximumValue": 65535
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "30"
+              "minimumValue": 1,
+              "maximumValue": 30
             }
           }
         },
@@ -837,19 +833,19 @@
         "id1_65535-uc1_99": {
           "types": {
             "screenline": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "65535"
+              "minimumValue": 1,
+              "maximumValue": 65535
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "99"
+              "minimumValue": 1,
+              "maximumValue": 99
             }
           }
         },
@@ -857,22 +853,22 @@
         "id1_4294967295-uc1_15": {
           "types": {
             "dc106": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "forest": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "4294967295"
+              "minimumValue": 1,
+              "maximumValue": 4294967295
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "15"
+              "minimumValue": 1,
+              "maximumValue": 15
             }
           }
         },
@@ -880,90 +876,90 @@
         "id1_4095-uc1_6": {
           "types": {
             "chamberlaincs4330cn": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "4095"
+              "minimumValue": 1,
+              "maximumValue": 4095
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "6"
+              "minimumValue": 1,
+              "maximumValue": 6
             }
           }
         },
         "id1_1048575-uc0_4": {
           "types": {
             "rfy": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "1048575"
+              "minimumValue": 1,
+              "maximumValue": 1048575
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "4"
+              "minimumValue": 0,
+              "maximumValue": 4
             }
           }
         },
         "id1_1048575-uc1_5": {
           "types": {
             "asa": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "1048575"
+              "minimumValue": 1,
+              "maximumValue": 1048575
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "5"
+              "minimumValue": 1,
+              "maximumValue": 5
             }
           }
         },
         "id1_1048575-uc0_15": {
           "types": {
             "rfyExt": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "1048575"
+              "minimumValue": 1,
+              "maximumValue": 1048575
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "15"
+              "minimumValue": 0,
+              "maximumValue": 15
             }
           }
         },
         "id1_524287-hcA_D-uc1_4": {
           "types": {
             "homeConfort": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "524287"
+              "minimumValue": 1,
+              "maximumValue": 524287
             },
             "houseCode": {
               "type": "string",
@@ -972,73 +968,73 @@
             },
             "unitCode": {
               "type": "int",
-              "minimumValue": "1",
-              "maximumValue": "4"
+              "minimumValue": 1,
+              "maximumValue": 4
             }
           }
         },
         "id0_268435456": {
           "types": {
             "keeLoq": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "id": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "268435456"
+              "minimumValue": 0,
+              "maximumValue": 268435456
             }
           }
         },
         "uc0_31": {
           "types": {
             "he105": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "unitCode": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "31"
+              "minimumValue": 0,
+              "maximumValue": 31
             }
           }
         },
         "uc0_255": {
           "types": {
             "rts10": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "g6rH4t1": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "g6rH3t1": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "unitCode": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "255"
+              "minimumValue": 0,
+              "maximumValue": 255
             }
           }
         },
         "uc0_262143": {
           "types": {
             "g6rH4tb": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "g6rH4s": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "unitCode": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "262143"
+              "minimumValue": 0,
+              "maximumValue": 262143
             }
           }
         },
@@ -1046,14 +1042,14 @@
         "uc0_65535": {
           "types": {
             "g6rH4td": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
             "unitCode": {
               "type": "int",
-              "minimumValue": "0",
-              "maximumValue": "65535"
+              "minimumValue": 0,
+              "maximumValue": 65535
             }
           }
         },
@@ -1061,13 +1057,13 @@
         "hcrx-garx-sarx": {
           "types": {
             "fs20": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "fht8v": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             },
             "fht80": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
@@ -1091,7 +1087,7 @@
         "cameraX10Ninja": {
           "types": {
             "cameraX10Ninja": {
-              "canBeCreatedManually": "true"
+              "canBeCreatedManually": true
             }
           },
           "content": {
@@ -1105,7 +1101,7 @@
         "Encoder Module": {
           "types": {
             "Encoder Module": {
-              "canBeCreatedManually": "false"
+              "canBeCreatedManually": false
             }
           },
           "content": {

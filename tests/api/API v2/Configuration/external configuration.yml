@@ -1,0 +1,59 @@
+info:
+  name: external configuration
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/configurations/externals/:externalClientType
+  params:
+    - name: externalClientType
+      value: webclientv2
+      type: path
+      description: Client configuration
+  body:
+    type: text
+    data: ""
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: external configuration
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/configurations/externals/:externalClientType
+      method: GET
+      params:
+        - name: externalClientType
+          value: webclientv2
+          type: path
+          description: Client configuration
+      body:
+        type: text
+        data: ""
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "45"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "param1": 1,
+              "param2": false,
+              "param3": "blabla"
+          }
+
+docs: This request is used to retrieve client configuration

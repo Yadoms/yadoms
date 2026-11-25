@@ -1,0 +1,22 @@
+info:
+  name: remove widget
+  type: http
+  seq: 7
+
+http:
+  method: DELETE
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/updates/widgets/:widgetName
+  params:
+    - name: widgetName
+      value: RGB-color-picker
+      type: path
+      description: The widget name
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: Uninstall a widget

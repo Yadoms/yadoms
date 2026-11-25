@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "HueCt.h"
 
-CHueCt::CHueCt(int& min, int& max)
+CHueCt::CHueCt(const int& min, const int& max)
    : m_min(min),
      m_max(max)
 {

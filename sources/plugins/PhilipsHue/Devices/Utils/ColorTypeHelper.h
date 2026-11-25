@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <set>
+#include <string>
 #include "ColorType.h"
 #include "shared/DataContainer.h"
 #include "LightType.h"

@@ -25,17 +25,6 @@ namespace shared
          /// \brief	default value for HTTP Request default timeout
          //--------------------------------------------------------------
          static const int HttpRequestDefaultTimeoutSeconds = 45;
-
-         //--------------------------------------------------------------
-         /// \brief	REST Request type
-         //--------------------------------------------------------------
-         enum class EType
-         {
-            kGet = 0,
-            kPut,
-            kPost,
-            kHead
-         };
          
          //--------------------------------------------------------------
          /// Functions to build the request

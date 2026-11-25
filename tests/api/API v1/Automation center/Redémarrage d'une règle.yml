@@ -1,0 +1,20 @@
+info:
+  name: Redémarrage d'une règle
+  type: http
+  seq: 8
+
+http:
+  method: PUT
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/automation/rule/1/restart
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: multipart-form
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

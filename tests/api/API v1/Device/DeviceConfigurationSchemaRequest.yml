@@ -1,0 +1,18 @@
+info:
+  name: DeviceConfigurationSchemaRequest
+  type: http
+  seq: 12
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/device/22/configurationSchema
+  headers:
+    - name: Content-Type
+      value: application/json
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

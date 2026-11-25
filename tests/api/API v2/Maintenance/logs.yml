@@ -1,0 +1,90 @@
+info:
+  name: logs
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/logs/:url
+  params:
+    - name: url
+      value: logs_20211209T193006.226155.zip
+      type: path
+      description: "[optional] Returns all logs if omitted"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: logs
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/logs/
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "1066"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "logs": [
+                  {
+                      "size": 172273,
+                      "modificationDate": "20211209T182458",
+                      "path": "backups\\logs_20211209T182458.607438.zip",
+                      "url": "logs_20211209T182458.607438.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 172273,
+                      "modificationDate": "20211209T182652",
+                      "path": "backups\\logs_20211209T182651.786174.zip",
+                      "url": "logs_20211209T182651.786174.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 172273,
+                      "modificationDate": "20211209T182653",
+                      "path": "backups\\logs_20211209T182653.610197.zip",
+                      "url": "logs_20211209T182653.610197.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 172273,
+                      "modificationDate": "20211209T182704",
+                      "path": "backups\\logs_20211209T182704.690369.zip",
+                      "url": "logs_20211209T182704.690369.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 145468431,
+                      "modificationDate": "20211209T182759",
+                      "path": "backups\\logs_20211209T182747.566212.zip",
+                      "url": "logs_20211209T182747.566212.zip",
+                      "inprogress": false
+                  },
+                  {
+                      "size": 35762176,
+                      "modificationDate": "20211209T183159",
+                      "path": "backups\\logs_20211209T183156.143235.zip.inprogress",
+                      "url": "logs_20211209T183156.143235.zip.inprogress",
+                      "inprogress": true
+                  }
+              ],
+              "inProgress": "tasks/66de4392-dafa-4b82-97d6-0db418ab48c1"
+          }
+
+docs: Get logs

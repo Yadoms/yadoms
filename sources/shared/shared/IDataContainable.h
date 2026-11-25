@@ -11,11 +11,10 @@ namespace shared
    class IDataContainable
    {
    public:
-      virtual ~IDataContainable() { }
+      virtual ~IDataContainable() = default;
 
       //--------------------------------------------------------------
       /// \brief		Extract the data into a data container 
-      /// \return    The data container ( a copy )
       //--------------------------------------------------------------
       virtual void extractContent(CDataContainer & containerToFill) const = 0;
 

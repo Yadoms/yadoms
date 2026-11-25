@@ -1,0 +1,60 @@
+info:
+  name: Widget put
+  type: http
+  seq: 2
+
+http:
+  method: PUT
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/widget
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+              "widget": [
+                  {
+                      "id": "1",
+                      "idPage": "1",
+                      "name": "widget1",
+                      "sizeX": "1",
+                      "sizeY": "1",
+                      "positionX": "1",
+                      "positionY": "1",
+                      "configuration": ""
+                  },
+                  {
+                      "id": "2",
+                      "idPage": "1",
+                      "name": "widget2",
+                      "sizeX": "2",
+                      "sizeY": "2",
+                      "positionX": "2",
+                      "positionY": "2",
+                      "configuration": ""
+                  },
+                  {
+                      "idPage": "1",
+                      "name": "widget3",
+                      "sizeX": "3",
+                      "sizeY": "3",
+                      "positionX": "3",
+                      "positionY": "3",
+                      "configuration": ""
+                  }
+              ]
+          }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+docs: |
+  put des 3 widgets
+
+  -> les deux premiers definissent déjà un id
+  -> le dernier n'e défini pas

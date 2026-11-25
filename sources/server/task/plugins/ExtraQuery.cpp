@@ -10,7 +10,8 @@ namespace task
    {
       CExtraQuery::CExtraQuery(const boost::shared_ptr<pluginSystem::IInstance>& pluginInstance,
                                const boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery>& query)
-         : m_pluginInstance(pluginInstance), m_query(query)
+         : m_pluginInstance(pluginInstance),
+           m_query(query)
       {
          std::string mainKeyword = ":extraQueries.";
          if (!query->getData()->device().empty())
@@ -22,7 +23,7 @@ namespace task
             throw shared::exception::CInvalidParameter("pluginInstance");
       }
 
-      const std::string& CExtraQuery::getName() const
+      std::string CExtraQuery::getName()
       {
          return m_taskName;
       }
@@ -34,12 +35,17 @@ namespace task
 
       void CExtraQuery::doWork(TaskProgressFunc pFunctor)
       {
-         auto queryReal = boost::dynamic_pointer_cast<pluginSystem::CExtraQuery>(m_query);
+         const auto queryReal = boost::dynamic_pointer_cast<pluginSystem::CExtraQuery>(m_query);
          queryReal->registerCallback(pFunctor);
 
          m_pluginInstance->postExtraQuery(m_query, m_taskId);
 
          queryReal->waitForExtraQueryProcess();
+      }
+
+      bool CExtraQuery::isCancellable() const
+      {
+         return false;
       }
    } //namespace plugins
 } //namespace task

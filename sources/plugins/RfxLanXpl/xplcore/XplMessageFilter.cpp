@@ -4,6 +4,8 @@
 #include "XplException.h"
 #include <boost/algorithm/string.hpp>
 
+#include "shared/StringExtension.h"
+
 // A client send its data as broadcast on the XPL port,
 // and listen on a certain port, given in its XPL frame.
 
@@ -24,8 +26,7 @@ namespace xplcore
       //we allow a single "*" for all filter instead of *.*.*.*.*.*
       if (lineString != CXplHelper::WildcardString)
       {
-         std::vector<std::string> line;
-         boost::split(line, lineString, boost::is_any_of("."), boost::token_compress_on);
+         std::vector<std::string> line = shared::CStringExtension::splitAnyOfAndCompress(lineString, ".");
          if (line.size() != 6)
             throw CXplException("The filter string must be formed like : [msgtype].[vendor].[device].[instance].[class].[type] (wildchar * is allowed). Value given : " + filter);
 

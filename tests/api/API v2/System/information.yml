@@ -1,0 +1,121 @@
+info:
+  name: information
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/system/information
+  params:
+    - name: prop
+      value: database|platform|startupTime|developerMode|platformFamily|backupSupported|databaseEngine|serverReady|executablePath|yadomsVersion
+      type: query
+      description: |-
+        [optional] Set of flags of required values.Returns all values if omitted.
+        Supported values : platform|platform-family|yadoms-version|startup-time|executable-path|server-ready|database|developer-mode|database-engine|backup-supported
+      disabled: true
+  body:
+    type: text
+    data: ""
+  auth:
+    type: bearer
+    token: jhh
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: all information
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/system/information
+      method: GET
+      params:
+        - name: prop
+          value: database|platform|startupTime|developerMode|platformFamily|backupSupported|databaseEngine|serverReady|executablePath|yadomsVersion
+          type: query
+          description: |-
+            [optional] Set of flags of required values.Returns all values if omitted.
+            Supported values : platform|platform-family|yadoms-version|startup-time|executable-path|server-ready|database|developer-mode|database-engine|backup-supported
+          disabled: true
+      body:
+        type: text
+        data: ""
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Access-Control-Allow-Origin
+          value: "*"
+        - name: Server
+          value: yadoms/2.5.3-beta.1
+        - name: Connection
+          value: keep-alive
+        - name: Content-Type
+          value: application/json
+        - name: Content-Length
+          value: "381"
+      body:
+        type: json
+        data: |-
+          {
+              "platform": "Windows 10 10.0 (Build 19043)",
+              "platformFamily": "windows",
+              "yadomsVersion": "2.5.3-beta.1",
+              "startupTime": "20221117T174332.881445",
+              "executablePath": "D:\\Projets\\Domotique\\yadoms\\builds\\DEBUG\\yadoms.exe",
+              "serverReady": true,
+              "database": {
+                  "version": "5.2.0",
+                  "size": 9500672
+              },
+              "databaseEngine": {
+                  "type": "SQLite",
+                  "version": "3.27.1"
+              },
+              "backupSupported": true,
+              "developerMode": true
+          }
+  - name: information (some properties)
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/system/information?prop=database|platform|startupTime|developerMode|platformFamily
+      method: GET
+      params:
+        - name: prop
+          value: database|platform|startupTime|developerMode|platformFamily
+          type: query
+          description: |-
+            [optional] Set of flags of required values.Returns all values if omitted.
+            Supported values : platform|platform-family|yadoms-version|startup-time|executable-path|server-ready|database|developer-mode|database-engine|backup-supported
+      body:
+        type: text
+        data: ""
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Access-Control-Allow-Origin
+          value: "*"
+        - name: Server
+          value: yadoms/2.5.3-beta.1
+        - name: Connection
+          value: keep-alive
+        - name: Content-Type
+          value: application/json
+        - name: Content-Length
+          value: "177"
+      body:
+        type: json
+        data: |-
+          {
+              "platform": "Windows 10 10.0 (Build 19043)",
+              "platformFamily": "windows",
+              "startupTime": "20221117T174332.881445",
+              "database": {
+                  "version": "5.2.0",
+                  "size": 9500672
+              },
+              "developerMode": true
+          }

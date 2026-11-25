@@ -11,7 +11,7 @@
     }
   },
   "configurationSchema": {},
-  "supportManuallyDeviceCreation": "false",
+  "supportManuallyDeviceCreation": false,
   "recipientFields": {
     "userId": {
       "type": "string",

@@ -2,29 +2,21 @@
 
 #include "Exception.hpp"
 
-namespace shared { namespace exception
+namespace shared::exception
 {
-
    //--------------------------------------------------------------
-   /// \class Exception when archive extraction fails
+   /// \brief Exception when archive extraction fails
    //--------------------------------------------------------------
    class CExtract : public CException
    {
    public:
-      //--------------------------------------------------------------
-      /// \brief	                        Constructor
-      //--------------------------------------------------------------
       explicit CExtract(const std::string& message)
-         :CException(message)
+         : CException(message)
       {
       }
 
-      //--------------------------------------------------------------
-      /// \brief      Destructor
-      //--------------------------------------------------------------
-      virtual ~CExtract() throw()
+      ~CExtract() throw() override
       {
       }
    };
-
-} } // namespace shared::exception
+}

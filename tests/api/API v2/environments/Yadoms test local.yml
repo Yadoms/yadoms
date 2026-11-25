@@ -1,0 +1,6 @@
+name: Yadoms test local
+variables:
+  - name: yadoms_ip
+    value: 127.0.0.1
+  - name: yadoms_port_v2
+    value: "8080"

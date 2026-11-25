@@ -1,0 +1,64 @@
+info:
+  name: restore backup
+  type: http
+  seq: 5
+
+http:
+  method: PUT
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/backups/:url/restore
+  params:
+    - name: url
+      value: backup_20211206T233543.249116.zip
+      type: path
+      description: Url of backup to restore
+  body:
+    type: multipart-form
+    data:
+      - name: backup-file
+        type: file
+        value:
+          - backup_20211206T233543.249116.zip
+        description: Backup file to upload
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: restore backup
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/maintenance/backups/:url/restore
+      method: PUT
+      params:
+        - name: url
+          value: backup_20211206T233543.249116.zip
+          type: path
+          description: Url of backup to restore
+      body:
+        type: multipart-form
+        data:
+          - name: backup-file
+            type: file
+            value:
+              - backup_20211206T233543.249116.zip
+            description: Backup file to upload
+    response:
+      status: 202
+      statusText: Accepted
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Location
+          value: tasks/478144de-868e-4791-99de-55ce955b957f
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""
+
+docs: Start a new backup (returns ID of the created task)

@@ -37,11 +37,11 @@
     },
     "dateDisplay": {
       "type": "bool",
-      "defaultValue": "false"
+      "defaultValue": false
     },
     "automaticScale": {
       "type": "bool",
-      "defaultValue": "true"
+      "defaultValue": true
     }    
   }
 }

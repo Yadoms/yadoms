@@ -1,0 +1,14 @@
+info:
+  name: Recipients
+  type: folder
+  seq: 7
+
+request:
+  auth: inherit
+
+docs:
+  content: |-
+    This API manages recipients. Recipients are used by Yadoms as targets of notifications.
+    Use GET recipients/fields endpoint to retrieve all fields to be configured for a recipient.
+    Other endpoints are CRUD for recipient.
+  type: text/markdown

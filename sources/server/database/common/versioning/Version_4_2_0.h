@@ -12,18 +12,12 @@ namespace database
          //
          /// \brief Database version 4.2.0 update manager
          //
+         // ReSharper disable once CppInconsistentNaming
          class CVersion_4_2_0 : public CVersion_4_1_0
          {
          public:
-            //
-            /// \brief Constructor
-            //
-            CVersion_4_2_0();
-
-            //
-            /// \brief Destructor
-            //
-            virtual ~CVersion_4_2_0();
+            CVersion_4_2_0() = default;
+            ~CVersion_4_2_0() override = default;
 
             // ISQLiteVersionUpgrade implementation
             void checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& requester,
@@ -38,6 +32,7 @@ namespace database
          private:
             static const shared::versioning::CSemVer Version;
 
+            // ReSharper disable once CppInconsistentNaming
             static void updateFrom4_1_0(const boost::shared_ptr<IDatabaseRequester>& requester);
 
             static boost::optional<bool> loadFirstStart(const boost::shared_ptr<IDatabaseRequester>& requester);
@@ -49,7 +44,8 @@ namespace database
             static boost::optional<std::string> loadBasicAuthentication(const boost::shared_ptr<IDatabaseRequester>& requester);
 
             static boost::optional<boost::shared_ptr<shared::CDataContainer>> convertLocation(const boost::optional<std::string>& oldLocation);
-            static boost::optional<boost::shared_ptr<shared::CDataContainer>> convertBasicAuthentication(const boost::optional<std::string>& oldBasicAuthentication);
+            static boost::optional<boost::shared_ptr<shared::CDataContainer>> convertBasicAuthentication(
+               const boost::optional<std::string>& oldBasicAuthentication);
 
             static void insertConfigurationValue(const boost::shared_ptr<IDatabaseRequester> requester,
                                                  const std::string& section,

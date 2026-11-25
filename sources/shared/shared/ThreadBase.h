@@ -3,7 +3,6 @@
 
 namespace shared
 {
-
    //--------------------------------------------------------------
    /// \brief	Base class for threads
    //--------------------------------------------------------------
@@ -16,14 +15,11 @@ namespace shared
       /// \param [in]	bRethrowDoWorkExceptions : if true, all exception catch by this class are rethrown, if false nothing else is done with exception
       /// \note : doesn't start the thread, you need to call start
       //--------------------------------------------------------------
-      CThreadBase(const std::string & threadName, const bool bRethrowDoWorkExceptions = false);
+      CThreadBase(const std::string& threadName,
+                  bool bRethrowDoWorkExceptions = false);
 
-      //--------------------------------------------------------------
-      /// \brief			Destructor
-      //--------------------------------------------------------------
       virtual ~CThreadBase();
 
-   public:
       //--------------------------------------------------------------
       /// \brief			Start the thread
       //--------------------------------------------------------------
@@ -54,32 +50,40 @@ namespace shared
 
       //--------------------------------------------------------------
       /// \brief		Set the thread name
-      /// \param [in]	threadName : the thread name
+      /// \param [in]	name : the thread name
       //--------------------------------------------------------------
-      void setName(const std::string & name)
-      { m_threadName = name; }
+      void setName(const std::string& name)
+      {
+         m_threadName = name;
+      }
 
       //--------------------------------------------------------------
       /// \brief		Get the thread name
       /// \return    	The thread name
       //--------------------------------------------------------------
       const std::string& getName() const
-      { return m_threadName; }
+      {
+         return m_threadName;
+      }
 
 
       //--------------------------------------------------------------
       /// \brief     Change the stop time out
-      /// \return    The stop timeout (in seconds)
+      /// \param [in] seconds    The stop timeout (in seconds)
       //--------------------------------------------------------------
       void setStopTimeoutSeconds(int seconds)
-      { m_stopTimeoutSeconds = seconds; }
+      {
+         m_stopTimeoutSeconds = seconds;
+      }
 
       //--------------------------------------------------------------
       /// \brief		Get the stop time out
       /// \return    	The stop timeout (in seconds)
       //--------------------------------------------------------------
       int getStopTimeoutSeconds() const
-      { return m_stopTimeoutSeconds;}   
+      {
+         return m_stopTimeoutSeconds;
+      }
 
    protected:
       //--------------------------------------------------------------
@@ -87,14 +91,12 @@ namespace shared
       //--------------------------------------------------------------
       virtual void doWork() = 0;
 
-   private:  
+   private:
       //--------------------------------------------------------------
       /// \brief			Method which manage the virtual doWork method
-      /// \return    	void
       //--------------------------------------------------------------
       void doWorkInternal();
 
-   private:
       //--------------------------------------------------------------
       /// \brief			Thread name
       //--------------------------------------------------------------
@@ -127,5 +129,4 @@ namespace shared
       //--------------------------------------------------------------
       bool m_stopping;
    };
-
 } // namespace shared

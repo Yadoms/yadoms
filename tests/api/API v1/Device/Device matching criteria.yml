@@ -1,0 +1,39 @@
+info:
+  name: Device matching criteria
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/device/matchcriteria
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: "{\r
+
+      \   \"expectedKeywordType\": [\r
+
+      \      \"numeric\",\r
+
+      \      \"bool\",\r
+
+      \      \"Enum\"\r
+
+      \   ],\r
+
+      \   \"expectedCapacity\" : [\"switch\", \"dimmable\"],\r
+
+      \   \"expectedKeywordAccess\" : [\"get\"],\r
+
+      \   \"expectedKeywordHistoryDepth\" : [\"default\"]\r
+
+      }\r\n"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

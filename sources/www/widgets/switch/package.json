@@ -32,11 +32,11 @@
       },
       "invert": {
          "type": "bool",
-         "defaultValue": "false"
+         "defaultValue": false
       },
       "askConfirmation": {
          "type": "bool",
-         "defaultValue": "false"
+         "defaultValue": false
       },
       "kind": {
          "type": "radioSection",

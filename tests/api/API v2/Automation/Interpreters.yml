@@ -1,0 +1,88 @@
+info:
+  name: Interpreters
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/automation/interpreters
+  headers:
+    - name: Accept-Language
+      value: fr
+      description: "Optional : provides translations if requested (en langugage if requested language not found)"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: all Interpreters
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/automation/interpreters
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "41"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "interpreters": {
+                  "yPython3": "available"
+              }
+          }
+  - name: all Interpreters, with translations
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/automation/interpreters
+      method: GET
+      headers:
+        - name: Accept-Language
+          value: fr
+          description: "Optional : provides translations if requested (en langugage if requested language not found)"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Access-Control-Allow-Origin
+          value: "*"
+        - name: Server
+          value: yadoms/2.5.3
+        - name: Connection
+          value: keep-alive
+        - name: Content-Type
+          value: application/json
+        - name: Content-Length
+          value: "339"
+      body:
+        type: json
+        data: |-
+          {
+              "interpreters": {
+                  "yPython27": {
+                      "available": true,
+                      "locales": {
+                          "description": "Interpréteur de règles écrites en Python 2.7.x"
+                      }
+                  },
+                  "yPython3": {
+                      "available": true,
+                      "locales": {
+                          "description": "Interpréteur de règles écrites en Python 3.x. Nécessite une installation standard de Python ([Télécharger ici](https://www.python.org/downloads/))."
+                      }
+                  }
+              }
+          }
+
+docs: Returns available rule interpreters

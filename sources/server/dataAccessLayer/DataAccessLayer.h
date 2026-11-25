@@ -4,7 +4,7 @@
 
 namespace dataAccessLayer
 {
-   class CDataAccessLayer : public IDataAccessLayer
+   class CDataAccessLayer final : public IDataAccessLayer
    {
    public:
       //--------------------------------------------------------------
@@ -13,10 +13,7 @@ namespace dataAccessLayer
       //--------------------------------------------------------------
       explicit CDataAccessLayer(boost::shared_ptr<database::IDataProvider> dataProvider);
 
-      //--------------------------------------------------------------
-      /// \brief       Destructor
-      //--------------------------------------------------------------
-      virtual ~CDataAccessLayer();
+      ~CDataAccessLayer() override = default;
 
       // IDataAccessLayer implementation
       boost::shared_ptr<IDeviceManager> getDeviceManager() const override;
@@ -34,5 +31,3 @@ namespace dataAccessLayer
       boost::shared_ptr<IEventLogger> m_eventLogger;
    };
 } //namespace dataAccessLayer 
-
-

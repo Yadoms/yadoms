@@ -10,7 +10,7 @@
       "minimumVersion": "2.3.0-beta.1"
     }
   },
-  "supportManuallyDeviceCreation": "false",
+  "supportManuallyDeviceCreation": false,
   "configurationSchema": {
     "SerialPort": {
       "type": "enum",
@@ -26,7 +26,9 @@
       "content": {
         "first": {
           "name": "1xTIC",
-          "type": "section"
+          "type": "section",
+          "content": {
+          }
         },
         "second": {
           "name": "2xTIC",

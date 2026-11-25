@@ -10,11 +10,6 @@ CDeviceConfigurationHelper::CDeviceConfigurationHelper(const CProfileHelper& pro
    m_deviceConfiguration->set("profile.activeSection", profile.profile());
 }
 
-CDeviceConfigurationHelper::~CDeviceConfigurationHelper()
-{
-}
-
-
 const boost::shared_ptr<shared::CDataContainer>& CDeviceConfigurationHelper::configuration() const
 {
    return m_deviceConfiguration;

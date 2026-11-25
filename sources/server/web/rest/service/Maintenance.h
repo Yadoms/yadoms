@@ -1,7 +1,7 @@
 #pragma once
 #include "IRestService.h"
-#include "web/rest/RestDispatcher.h"
 #include "task/Scheduler.h"
+#include "task/IRunningTaskMutex.h"
 #include "IPathProvider.h"
 #include "database/IAcquisitionRequester.h"
 #include "database/IDatabaseRequester.h"
@@ -15,19 +15,21 @@ namespace web
    {
       namespace service
       {
-         class CMaintenance : public IRestService
+         class CMaintenance final : public IRestService
          {
          public:
             explicit CMaintenance(boost::shared_ptr<const IPathProvider> pathProvider,
                                   const boost::shared_ptr<database::IDataProvider>& dataProvider,
                                   boost::shared_ptr<task::CScheduler> taskScheduler,
                                   boost::shared_ptr<IUploadFileManager> uploadFileManager);
-            virtual ~CMaintenance() = default;
+            ~CMaintenance() override = default;
 
             // IRestService implementation
-            void configureDispatcher(CRestDispatcher& dispatcher) override;
+            void configurePocoDispatcher(poco::CRestDispatcher& dispatcher) override;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> endPoints() override;
             // [END] IRestService implementation
 
+         private:
             static const std::string& getRestKeyword();
 
             boost::shared_ptr<shared::serialization::IDataSerializable> getDatabaseInformation(const std::vector<std::string>& parameters,
@@ -55,10 +57,29 @@ namespace web
             boost::shared_ptr<shared::serialization::IDataSerializable> getExportData(const std::vector<std::string>& parameters,
                                                                                       const std::string& requestContent) const;
 
-         private:
-            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(CRestDispatcher::CRestMethodHandler realMethod,
+            boost::shared_ptr<shared::serialization::IDataSerializable> transactionalMethod(poco::CRestDispatcher::CRestMethodHandler realMethod,
                                                                                             const std::vector<std::string>& parameters,
                                                                                             const std::string& requestContent) const;
+
+            boost::shared_ptr<IAnswer> getFilesPackage(const std::string& inputUrl,
+                                                       const std::string& packageFilePrefix,
+                                                       const std::string& resultArrayTag,
+                                                       const boost::shared_ptr<task::IRunningTaskMutex>& taskInProgressHandler) const;
+            boost::shared_ptr<IAnswer> startNotReenteringTask(const boost::shared_ptr<task::IRunningTaskMutex>& taskInProgressHandler,
+                                                              const std::function<boost::shared_ptr<task::ITask>()>& taskFct) const;
+            boost::shared_ptr<IAnswer> deleteFilesPackage(const std::string& inputUrl,
+                                                          const std::string& packageFilePrefix) const;
+            boost::shared_ptr<IAnswer> getBackupsV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> createBackupsV2(const boost::shared_ptr<IRequest>& request);
+            boost::shared_ptr<IAnswer> deleteBackupV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> restoreBackupV2(const boost::shared_ptr<IRequest>& request);
+            boost::shared_ptr<IAnswer> uploadBackupV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getLogsPackageV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> createLogsPackageV2(const boost::shared_ptr<IRequest>& request);
+            boost::shared_ptr<IAnswer> deleteLogsPackageV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> getAcquisitionsExportV2(const boost::shared_ptr<IRequest>& request) const;
+            boost::shared_ptr<IAnswer> createAcquisitionsExportV2(const boost::shared_ptr<IRequest>& request);
+            boost::shared_ptr<IAnswer> deleteAcquisitionsExportV2(const boost::shared_ptr<IRequest>& request) const;
 
             boost::shared_ptr<std::string> fileUploadChunkRead(const std::string& requestContent) const;
             std::string fileUploadChunkReadGuid(const std::string& requestContent) const;
@@ -73,6 +94,12 @@ namespace web
             boost::shared_ptr<database::IAcquisitionRequester> m_acquisitionRequester;
             boost::shared_ptr<task::CScheduler> m_taskScheduler;
             boost::shared_ptr<IUploadFileManager> m_uploadFileManager;
+            boost::shared_ptr<std::vector<boost::shared_ptr<IRestEndPoint>>> m_endPoints;
+
+            boost::shared_ptr<task::IRunningTaskMutex> m_backupInProgressTaskUidHandler;
+            boost::shared_ptr<task::IRunningTaskMutex> m_restoreBackupInProgressTaskUidHandler;
+            boost::shared_ptr<task::IRunningTaskMutex> m_packLogsInProgressTaskUidHandler;
+            boost::shared_ptr<task::IRunningTaskMutex> m_exportAcquisitionsInProgressTaskUidHandler;
          };
       } //namespace service
    } //namespace rest

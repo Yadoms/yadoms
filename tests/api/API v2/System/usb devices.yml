@@ -1,0 +1,126 @@
+info:
+  name: usb devices
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/system/usb-devices?vid-pid=[1256-26723]|[16700-8208]
+  params:
+    - name: vid-pid
+      value: "[1256-26723]|[16700-8208]"
+      type: query
+      description: |-
+        [optional] Set of vid/pid pairs to filter on some USB devices. Returns all USB devices if omitted.
+        Pair of vid/pid is expressed as [VID-PID]
+  body:
+    type: text
+    data: ""
+  auth:
+    type: bearer
+    token: jhh
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: usb devices filtered by vid/pid
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/system/usb-devices?vid-pid=[1256-26723]|[16700-8208]
+      method: GET
+      params:
+        - name: vid-pid
+          value: "[1256-26723]|[16700-8208]"
+          type: query
+      body:
+        type: text
+        data: ""
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "252"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "usbDevices": {
+                  "\\\\?\\usb#vid_04e8&pid_6863#rf8n63190th#{a5dcbf10-6530-11d2-901f-00c04fb951ed}": "SAMSUNG Mobile USB Composite Device ",
+                  "\\\\?\\usb#vid_413c&pid_2010#6&af0ffb3&3&1#{a5dcbf10-6530-11d2-901f-00c04fb951ed}": "Périphérique USB composite"
+              }
+          }
+  - name: usb devices (all)
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/system/usb-devices
+      method: GET
+      body:
+        type: text
+        data: ""
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "496"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "usbDevices": {
+                  "\\\\?\\usb#vid_04e8&pid_6863#rf8n63190th#{a5dcbf10-6530-11d2-901f-00c04fb951ed}": "SAMSUNG Mobile USB Composite Device ",
+                  "\\\\?\\usb#vid_045e&pid_0040#6&af0ffb3&3&3#{a5dcbf10-6530-11d2-901f-00c04fb951ed}": "Souris Microsoft USB Wheel Mouse Optical",
+                  "\\\\?\\usb#vid_413c&pid_2010#6&af0ffb3&3&1#{a5dcbf10-6530-11d2-901f-00c04fb951ed}": "Périphérique USB composite",
+                  "\\\\?\\usb#vid_413c&pid_a503#5&15a1d36e&0&14#{a5dcbf10-6530-11d2-901f-00c04fb951ed}": "Périphérique USB composite"
+              }
+          }
+  - name: all usb devices
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/system/usb-devices
+      method: GET
+      params:
+        - name: vid-pid
+          value: "[1256-26723]|[16700-8208]"
+          type: query
+          disabled: true
+      body:
+        type: text
+        data: ""
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "496"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "usbDevices": {
+                  "\\\\?\\usb#vid_04e8&pid_6863#rf8n63190th#{a5dcbf10-6530-11d2-901f-00c04fb951ed}": "SAMSUNG Mobile USB Composite Device ",
+                  "\\\\?\\usb#vid_045e&pid_0040#6&af0ffb3&3&3#{a5dcbf10-6530-11d2-901f-00c04fb951ed}": "Souris Microsoft USB Wheel Mouse Optical",
+                  "\\\\?\\usb#vid_413c&pid_2010#6&af0ffb3&3&1#{a5dcbf10-6530-11d2-901f-00c04fb951ed}": "Périphérique USB composite",
+                  "\\\\?\\usb#vid_413c&pid_a503#5&15a1d36e&0&14#{a5dcbf10-6530-11d2-901f-00c04fb951ed}": "Périphérique USB composite"
+              }
+          }

@@ -1,56 +1,60 @@
 ﻿#include "stdafx.h"
 #include "Supervisor.h"
-#include "pluginSystem/Manager.h"
-#include "database/Factory.h"
+#include <Poco/Net/NetException.h>
 #include <shared/Log.h>
-#include "web/poco/WebServer.h"
-#include "authentication/BasicAuthentication.h"
-#include "web/rest/service/Acquisition.h"
-#include "web/rest/service/AutomationRule.h"
-#include "web/rest/service/Plugin.h"
-#include "web/rest/service/Device.h"
-#include "web/rest/service/Page.h"
-#include "web/rest/service/Widget.h"
-#include "web/rest/service/Configuration.h"
-#include "web/rest/service/PluginEventLogger.h"
-#include "web/rest/service/EventLogger.h"
-#include "web/rest/service/System.h"
-#include "web/rest/service/Task.h"
-#include "web/rest/service/Recipient.h"
-#include "web/rest/service/Update.h"
-#include "web/rest/service/Maintenance.h"
-#include "web/rest/service/UploadFileManager.h"
+#include <shared/ServiceLocator.h>
 #include <shared/ThreadBase.h>
-#include "task/Scheduler.h"
+#include <utility>
+#include "automation/interpreter/Manager.h"
+#include "automation/RuleManager.h"
 #include "communication/PluginGateway.h"
 #include "dataAccessLayer/DataAccessLayer.h"
-#include "notification/NotificationCenter.h"
-#include "automation/RuleManager.h"
-#include <shared/ServiceLocator.h>
-#include "startupOptions/IStartupOptions.h"
+#include "database/Factory.h"
 #include "dateTime/DateTimeNotifier.h"
-#include <Poco/Net/NetException.h>
-#include "location/Location.h"
-#include "location/IpApiAutoLocation.h"
-#include "dateTime/TimeZoneProvider.h"
 #include "dateTime/TimeZoneDatabase.h"
-#include "automation/interpreter/Manager.h"
+#include "dateTime/TimeZoneProvider.h"
 #include "hardware/usb/DevicesListerFactory.h"
+#include "location/IpApiAutoLocation.h"
+#include "location/Location.h"
+#include "notification/NotificationCenter.h"
+#include "pluginSystem/Manager.h"
+#include "task/Scheduler.h"
+#include "update/UpdateManager.h"
+#include "web/poco/WebServer.h"
+#include "web/rest/service/Acquisition.h"
+#include "web/rest/service/AutomationRule.h"
+#include "web/rest/service/Configuration.h"
+#include "web/rest/service/Device.h"
+#include "web/rest/service/EventLogger.h"
+#include "web/rest/service/Maintenance.h"
+#include "web/rest/service/Page.h"
+#include "web/rest/service/Plugin.h"
+#include "web/rest/service/PluginEventLogger.h"
+#include "web/rest/service/Recipient.h"
+#include "web/rest/service/System.h"
+#include "web/rest/service/Task.h"
+#include "web/rest/service/Update.h"
+#include "web/rest/service/UploadFileManager.h"
+#include "web/rest/service/Widget.h"
+#include "web/oatppServer/WebServer.h"
+#include "web/oatppServer/Authentication.h"
+#include "web/poco/BasicAuthentication.h"
+#include "web/rest/service/Keyword.h"
 
 CSupervisor::CSupervisor(boost::shared_ptr<const IPathProvider> pathProvider,
                          const shared::versioning::CSemVer& yadomsVersion)
-   : m_pathProvider(pathProvider),
-     m_yadomsVersion(yadomsVersion)
+   : m_pathProvider(std::move(pathProvider)),
+   m_yadomsVersion(yadomsVersion)
 {
 }
 
 
 void CSupervisor::run()
 {
-   YADOMS_LOG_CONFIGURE("Supervisor");
-   YADOMS_LOG(debug) << "Supervisor is starting";
+   YADOMS_LOG_CONFIGURE("Supervisor")
+      YADOMS_LOG(debug) << "Supervisor is starting";
 
-   boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dal;
+   boost::shared_ptr<dataAccessLayer::IDataAccessLayer> dataAccessLayer;
    try
    {
       //create the notification center
@@ -63,40 +67,43 @@ void CSupervisor::run()
       //start database system
       const auto databaseFactory = boost::make_shared<database::CFactory>(m_pathProvider,
                                                                           startupOptions);
-      auto pDataProvider = databaseFactory->createDataProvider();
-      if (!pDataProvider->load())
+      auto dataProvider = databaseFactory->createDataProvider();
+      if (!dataProvider->load())
          throw shared::exception::CException("Fail to load database");
 
       //create the data access layer
-      dal = boost::make_shared<dataAccessLayer::CDataAccessLayer>(pDataProvider);
-      shared::CServiceLocator::instance().push<dataAccessLayer::IDataAccessLayer>(dal);
+      dataAccessLayer = boost::make_shared<dataAccessLayer::CDataAccessLayer>(dataProvider);
+      shared::CServiceLocator::instance().push<dataAccessLayer::IDataAccessLayer>(dataAccessLayer);
 
       // Create the location provider
-      auto location = boost::make_shared<location::CLocation>(dal->getConfigurationManager(),
+      auto location = boost::make_shared<location::CLocation>(dataAccessLayer->getConfigurationManager(),
                                                               boost::make_shared<location::CIpApiAutoLocation>());
       const auto timezoneDatabase = boost::make_shared<dateTime::CTimeZoneDatabase>();
-      const auto timezoneProvider = boost::make_shared<dateTime::CTimeZoneProvider>(dal->getConfigurationManager(),
+      const auto timezoneProvider = boost::make_shared<dateTime::CTimeZoneProvider>(dataAccessLayer->getConfigurationManager(),
                                                                                     timezoneDatabase,
                                                                                     "Europe/Paris");
 
+      const auto usbDeviceListener = hardware::usb::CDevicesListerFactory::createDeviceLister();
+
       // Create Task manager
-      auto taskManager(boost::make_shared<task::CScheduler>(dal->getEventLogger()));
+      auto taskManager(boost::make_shared<task::CScheduler>(dataAccessLayer->getEventLogger()));
 
       // Create the Plugin manager
       auto pluginManager(boost::make_shared<pluginSystem::CManager>(m_pathProvider,
                                                                     m_yadomsVersion,
-                                                                    pDataProvider,
-                                                                    dal,
+                                                                    dataProvider,
+                                                                    dataAccessLayer,
                                                                     location,
-                                                                    taskManager));
+                                                                    taskManager,
+                                                                    startupOptions->getDeveloperMode()));
 
       // Start Task manager
       taskManager->start();
 
       // Start the plugin gateway
-      auto pluginGateway(
-         boost::make_shared<communication::CPluginGateway>(pDataProvider, dal->getAcquisitionHistorizer(),
-                                                           pluginManager));
+      auto pluginGateway(boost::make_shared<communication::CPluginGateway>(dataProvider,
+                                                                           dataAccessLayer->getAcquisitionHistorizer(),
+                                                                           pluginManager));
 
 
       // Start script interpreter manager
@@ -105,83 +112,85 @@ void CSupervisor::run()
       // Start automation rules manager
       boost::shared_ptr<automation::IRuleManager> automationRulesManager(boost::make_shared<automation::CRuleManager>(
          scriptInterpreterManager,
-         pDataProvider,
+         dataProvider,
          pluginGateway,
-         dal->getKeywordManager(),
-         dal->getEventLogger(),
+         dataAccessLayer->getKeywordManager(),
+         dataAccessLayer->getEventLogger(),
          location,
          timezoneProvider));
       shared::CServiceLocator::instance().push<automation::IRuleManager>(automationRulesManager);
 
 
       // Create the update manager
-      auto updateManager(boost::make_shared<update::CUpdateManager>(taskManager,
-                                                                    pluginManager,
-                                                                    scriptInterpreterManager,
-                                                                    dal->getEventLogger(),
-                                                                    startupOptions->getDeveloperMode(),
-                                                                    m_pathProvider));
+      const auto updateManager(boost::make_shared<update::CUpdateManager>(taskManager,
+                                                                          pluginManager,
+                                                                          scriptInterpreterManager,
+                                                                          dataAccessLayer->getEventLogger(),
+                                                                          startupOptions->getDeveloperMode(),
+                                                                          m_pathProvider));
 
+      // Start Web servers
+      const auto restServices = boost::make_shared<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>();
+      restServices->push_back(boost::make_shared<web::rest::service::CPlugin>(dataProvider,
+                                                                              pluginManager,
+                                                                              dataAccessLayer->getDeviceManager(),
+                                                                              usbDeviceListener,
+                                                                              timezoneDatabase,
+                                                                              taskManager,
+                                                                              *pluginGateway,
+                                                                              startupOptions->getDeveloperMode()));
+      restServices->push_back(boost::make_shared<web::rest::service::CDevice>(dataProvider,
+                                                                              pluginManager,
+                                                                              dataAccessLayer->getDeviceManager(),
+                                                                              dataAccessLayer->getKeywordManager(),
+                                                                              *pluginGateway));
+      restServices->push_back(boost::make_shared<web::rest::service::CKeyword>(dataProvider,
+                                                                               dataAccessLayer->getKeywordManager(),
+                                                                               *pluginGateway));
+      restServices->push_back(boost::make_shared<web::rest::service::CPage>(dataProvider));
+      restServices->push_back(boost::make_shared<web::rest::service::CWidget>(dataProvider,
+                                                                              m_pathProvider->webServerPath().string()));
+      restServices->push_back(boost::make_shared<web::rest::service::CConfiguration>(dataProvider,
+                                                                                     dataAccessLayer->getConfigurationManager()));
+      restServices->push_back(boost::make_shared<web::rest::service::CPluginEventLogger>(dataProvider));
+      restServices->push_back(boost::make_shared<web::rest::service::CEventLogger>(dataAccessLayer->getEventLogger()));
+      restServices->push_back(boost::make_shared<web::rest::service::CSystem>(timezoneDatabase,
+                                                                              usbDeviceListener,
+                                                                              dataProvider->getDatabaseRequester(),
+                                                                              dataAccessLayer->getConfigurationManager()));
+      restServices->push_back(boost::make_shared<web::rest::service::CAcquisition>(dataProvider));
+      restServices->push_back(boost::make_shared<web::rest::service::CAutomationRule>(dataProvider,
+                                                                                      automationRulesManager));
+      restServices->push_back(boost::make_shared<web::rest::service::CTask>(taskManager));
+      restServices->push_back(boost::make_shared<web::rest::service::CRecipient>(dataProvider,
+                                                                                 pluginManager));
+      restServices->push_back(boost::make_shared<web::rest::service::CUpdate>(updateManager,
+                                                                              taskManager));
+      restServices->push_back(boost::make_shared<web::rest::service::CMaintenance>(m_pathProvider,
+                                                                                   dataProvider,
+                                                                                   taskManager,
+                                                                                   boost::make_shared<web::rest::service::CUploadFileManager>()));
 
-      // Start Web server
-      const auto webServerIp = startupOptions->getWebServerIPAddress();
-      const auto webServerUseSSL = startupOptions->getIsWebServerUseSSL();
-      const auto webServerPort = startupOptions->getWebServerPortNumber();
-      const auto securedWebServerPort = startupOptions->getSSLWebServerPortNumber();
-      const auto webServerPath = m_pathProvider->webServerPath().string();
-      const auto scriptInterpretersPath = m_pathProvider->scriptInterpretersPath().string();
-      const auto allowExternalAccess = startupOptions->getWebServerAllowExternalAccess();
+      auto pocoBasedWebServer = createPocoBasedWebServer(startupOptions->getWebServerIpAddress(),
+                                                         startupOptions->getWebServerPortNumber() + 1, //TODO virer le +1 (pour test...)
+                                                         startupOptions->getIsWebServerUseHttps(),
+                                                         startupOptions->getSslWebServerPortNumber() + 1, //TODO virer le +1 (pour test...)
+                                                         true,
+                                                         m_pathProvider->webServerPath(),
+                                                         restServices,
+                                                         dataAccessLayer->getConfigurationManager(),
+                                                         startupOptions->getNoPasswordFlag());
 
-      auto webServer(boost::make_shared<web::poco::CWebServer>(webServerIp, webServerUseSSL, webServerPort,
-                                                               securedWebServerPort, webServerPath,
-                                                               "/rest/", "/ws", allowExternalAccess));
-
-      webServer->getConfigurator()->websiteHandlerAddAlias("plugins", m_pathProvider->pluginsPath().string());
-      webServer->getConfigurator()->websiteHandlerAddAlias("scriptInterpreters", scriptInterpretersPath);
-      webServer->getConfigurator()->websiteHandlerAddAlias("backups", m_pathProvider->backupPath().string());
-
-      webServer->getConfigurator()->configureAuthentication(
-         boost::make_shared<authentication::CBasicAuthentication>(
-            dal->getConfigurationManager(), startupOptions->getNoPasswordFlag()));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CPlugin>(pDataProvider, pluginManager,
-                                                         dal->getDeviceManager(), *pluginGateway,
-                                                         startupOptions->getDeveloperMode()));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CDevice>(pDataProvider, pluginManager,
-                                                         dal->getDeviceManager(), dal->getKeywordManager(),
-                                                         *pluginGateway));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CPage>(pDataProvider));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CWidget>(pDataProvider, webServerPath));
-      webServer->getConfigurator()->
-                 restHandlerRegisterService(
-                    boost::make_shared<web::rest::service::CConfiguration>(dal->getConfigurationManager()));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CPluginEventLogger>(pDataProvider));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CEventLogger>(dal->getEventLogger()));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CSystem>(timezoneDatabase,
-                                                         hardware::usb::CDevicesListerFactory::createDeviceLister()));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CAcquisition>(pDataProvider));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CAutomationRule>(pDataProvider, automationRulesManager));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CTask>(taskManager));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CRecipient>(pDataProvider));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CUpdate>(updateManager));
-      webServer->getConfigurator()->restHandlerRegisterService(
-         boost::make_shared<web::rest::service::CMaintenance>(m_pathProvider,
-                                                              pDataProvider,
-                                                              taskManager,
-                                                              boost::make_shared<web::rest::service::CUploadFileManager>()));
-
-      webServer->start();
+      auto oatppBasedWebServer = createOatppBasedWebServer(startupOptions->getWebServerIpAddress(),
+                                                           startupOptions->getWebServerPortNumber(),
+                                                           startupOptions->getIsWebServerUseHttps(),
+                                                           startupOptions->getSslWebServerPortNumber(),
+                                                           m_pathProvider->webServerPath(),
+                                                           startupOptions->getWebServerHttpsCertificateFile(),
+                                                           startupOptions->getWebServerHttpsPrivateKeyFile(),
+                                                           restServices,
+                                                           dataAccessLayer->getConfigurationManager(),
+                                                           startupOptions->getNoPasswordFlag());
 
       // Start the plugin manager (start all plugin instances)
       pluginManager->start(boost::posix_time::minutes(2));
@@ -194,9 +203,9 @@ void CSupervisor::run()
       dateTimeNotificationService.start();
 
       // Register to event logger started event
-      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", std::string());
+      dataAccessLayer->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStarted, "yadoms", std::string());
 
-      //update the server state
+      // Update the server state
       shared::CServiceLocator::instance().get<IRunningInformation>()->setServerFullyLoaded();
 
       // Main loop
@@ -211,8 +220,8 @@ void CSupervisor::run()
       dateTimeNotificationService.stop();
 
       //stop web server
-      webServer->stop();
-      webServer.reset();
+      pocoBasedWebServer.reset();
+      oatppBasedWebServer.reset();
 
       //stop the automation rules
       shared::CServiceLocator::instance().remove<automation::IRuleManager>(automationRulesManager);
@@ -229,40 +238,40 @@ void CSupervisor::run()
       pluginManager.reset();
 
       //stop database tasks
-      pDataProvider->stopMaintenanceTasks();
+      dataProvider->stopMaintenanceTasks();
 
-      dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", std::string());
+      dataAccessLayer->getEventLogger()->addEvent(database::entities::ESystemEventCode::kStopped, "yadoms", std::string());
    }
    catch (Poco::Net::NetException& pe)
    {
       YADOMS_LOG(error) << "Supervisor : net exception " << pe.displayText();
-      if (dal && dal->getEventLogger())
-         dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms",
-                                         pe.displayText());
+      if (dataAccessLayer && dataAccessLayer->getEventLogger())
+         dataAccessLayer->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms",
+                                                     pe.displayText());
    }
    catch (Poco::Exception& e)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception " << e.displayText();
-      if (dal && dal->getEventLogger())
-         dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", e.displayText());
+      if (dataAccessLayer && dataAccessLayer->getEventLogger())
+         dataAccessLayer->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", e.displayText());
    }
    catch (shared::exception::CException& ex)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled shared::exception::CException " << ex.what();
-      if (dal && dal->getEventLogger())
-         dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", ex.what());
+      if (dataAccessLayer && dataAccessLayer->getEventLogger())
+         dataAccessLayer->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", ex.what());
    }
    catch (std::exception& e)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception " << e.what();
-      if (dal && dal->getEventLogger())
-         dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", e.what());
+      if (dataAccessLayer && dataAccessLayer->getEventLogger())
+         dataAccessLayer->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", e.what());
    }
    catch (...)
    {
       YADOMS_LOG(error) << "Supervisor : unhandled exception.";
-      if (dal && dal->getEventLogger())
-         dal->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", "unknown error");
+      if (dataAccessLayer && dataAccessLayer->getEventLogger())
+         dataAccessLayer->getEventLogger()->addEvent(database::entities::ESystemEventCode::kYadomsCrash, "yadoms", "unknown error");
    }
 
    //notify application that supervisor ends
@@ -272,4 +281,71 @@ void CSupervisor::run()
 void CSupervisor::requestToStop()
 {
    m_eventHandler.postEvent(kStopRequested);
+}
+
+std::unique_ptr<web::IWebServer> CSupervisor::createPocoBasedWebServer(
+   const std::string& address,
+   unsigned short port,
+   bool useSsl,
+   unsigned short securedPort,
+   bool allowExternalAccess,
+   const boost::filesystem::path& webServerPath,
+   const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
+   const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
+   bool skipPasswordCheck) const
+{
+   const auto aliases = boost::make_shared<std::map<std::string, boost::filesystem::path>>();
+   (*aliases)["plugins"] = m_pathProvider->pluginsPath();
+   (*aliases)["scriptInterpreters"] = m_pathProvider->scriptInterpretersPath();
+   (*aliases)["backups"] = m_pathProvider->backupPath();
+
+   auto webServer(std::make_unique<web::poco::CWebServer>(address,
+                                                          port,
+                                                          useSsl,
+                                                          securedPort,
+                                                          webServerPath.string(),
+                                                          "/rest/",
+                                                          "/ws",
+                                                          allowExternalAccess));
+
+   for (const auto& alias : *aliases)
+      webServer->websiteHandlerAddAlias(alias.first,
+                                        alias.second.string());
+
+   webServer->configureAuthentication(boost::make_shared<web::poco::CBasicAuthentication>(configurationManager,
+                                                                                          skipPasswordCheck));
+
+   for (const auto& restService : *restServices)
+      webServer->restHandlerRegisterService(restService);
+
+   webServer->start();
+
+   return std::move(webServer);
+}
+
+std::unique_ptr<web::IWebServer> CSupervisor::createOatppBasedWebServer(
+   const std::string& address,
+   unsigned short port,
+   bool useHttps,
+   unsigned short httpsPort,
+   const boost::filesystem::path& webServerPath,
+   const boost::filesystem::path& httpsLocalCertificateFile,
+   const boost::filesystem::path& httpsPrivateKeyFile,
+   const boost::shared_ptr<std::vector<boost::shared_ptr<web::rest::service::IRestService>>>& restServices,
+   const boost::shared_ptr<dataAccessLayer::IConfigurationManager>& configurationManager,
+   bool skipPasswordCheck)
+{
+   return std::make_unique<web::oatpp_server::CWebServer>(address,
+                                                         port,
+                                                         useHttps,
+                                                         httpsPort,
+                                                         webServerPath,
+                                                         httpsLocalCertificateFile,
+                                                         httpsPrivateKeyFile,
+                                                         "rest",
+                                                         restServices,
+                                                         "ws",
+                                                         boost::make_shared<web::oatpp_server::CAuthentication>(
+                                                            configurationManager,
+                                                            skipPasswordCheck));
 }

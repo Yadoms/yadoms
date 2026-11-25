@@ -1,10 +1,11 @@
 #include "stdafx.h"
 #include "ConfigurationManager.h"
 #include <shared/exception/EmptyResult.hpp>
+#include <utility>
 
 namespace dataAccessLayer
 {
-   class CDefaultServerConfiguration
+   class CDefaultServerConfiguration final
    {
    public:
       boost::shared_ptr<shared::CDataContainer> get() const
@@ -32,37 +33,31 @@ namespace dataAccessLayer
          m_configuration->set("basicAuthentication.password", std::string());
       }
 
-      virtual ~CDefaultServerConfiguration()
-      {
-      }
+      ~CDefaultServerConfiguration() = default;
 
    private:
       const boost::shared_ptr<shared::CDataContainer> m_configuration;
    };
 
    CConfigurationManager::CConfigurationManager(boost::shared_ptr<database::IConfigurationRequester> configurationRequester)
-      : m_configurationRequester(configurationRequester),
+      : m_configurationRequester(std::move(configurationRequester)),
         m_defaultServerConfiguration(CDefaultServerConfiguration().get())
    {
    }
 
-   CConfigurationManager::~CConfigurationManager()
+   boost::shared_ptr<shared::CDataContainer> CConfigurationManager::getExternalConfiguration(const std::string& section) const
    {
-   }
-
-   std::string CConfigurationManager::getExternalConfiguration(const std::string& section) const
-   {
-      return getConfiguration("external." + section);
+      return boost::make_shared<shared::CDataContainer>(getConfiguration("external." + section));
    }
 
    void CConfigurationManager::saveExternalConfiguration(const std::string& section,
                                                          const shared::CDataContainer& value)
    {
       saveConfiguration("external." + section,
-                        value);
+                        value.serialize());
    }
 
-   void CConfigurationManager::notifyServerConfigurationChanged(boost::shared_ptr<shared::CDataContainer> serverConfiguration)
+   void CConfigurationManager::notifyServerConfigurationChanged(const boost::shared_ptr<shared::CDataContainer>& serverConfiguration)
    {
       for (const auto& fct : m_onServerConfigurationChangedObservers)
          fct(serverConfiguration);
@@ -84,31 +79,37 @@ namespace dataAccessLayer
       }
    }
 
+   bool CConfigurationManager::quiteEqual(double a, double b)
+   {
+      return std::nextafter(a, std::numeric_limits<double>::lowest()) <= b
+         && std::nextafter(a, std::numeric_limits<double>::max()) >= b;
+   }
+
    void CConfigurationManager::saveServerConfiguration(const shared::CDataContainer& newConfiguration)
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_configurationMutex);
 
       // If location changed, mark it as user-modified
       const auto currentConfiguration = getServerConfiguration();
-      auto configurationToSave = newConfiguration.copy();
-      if (newConfiguration.get<double>("location.latitude") != currentConfiguration->get<double>("location.latitude") ||
-         newConfiguration.get<double>("location.longitude") != currentConfiguration->get<double>("location.longitude") ||
-         newConfiguration.get<double>("location.altitude") != currentConfiguration->get<double>("location.altitude") ||
+      const auto configurationToSave = newConfiguration.copy();
+      if (!quiteEqual(newConfiguration.get<double>("location.latitude"), currentConfiguration->get<double>("location.latitude")) ||
+         !quiteEqual(newConfiguration.get<double>("location.longitude"), currentConfiguration->get<double>("location.longitude")) ||
+         !quiteEqual(newConfiguration.get<double>("location.altitude"), currentConfiguration->get<double>("location.altitude")) ||
          newConfiguration.get<std::string>("location.timezone") != currentConfiguration->get<std::string>("location.timezone"))
       {
          configurationToSave->set("location.status", "userDefined");
       }
 
-      saveConfiguration("server",*configurationToSave.get());
+      saveConfiguration("server", configurationToSave->serialize());
       notifyServerConfigurationChanged(getServerConfiguration());
    }
 
    void CConfigurationManager::resetServerConfiguration()
    {
-      auto resetConfiguration = m_defaultServerConfiguration->copy();
+      const auto resetConfiguration = m_defaultServerConfiguration->copy();
       // Reset configuration must not overwrite firstStart flag
       resetConfiguration->set("firstStart", getServerConfiguration()->get<bool>("firstStart"));
-      saveServerConfiguration(*resetConfiguration.get());
+      saveServerConfiguration(*resetConfiguration);
    }
 
    std::string CConfigurationManager::getDatabaseVersion() const
@@ -116,7 +117,8 @@ namespace dataAccessLayer
       return getConfiguration("databaseVersion");
    }
 
-   void CConfigurationManager::subscribeOnServerConfigurationChanged(boost::function1<void, boost::shared_ptr<shared::CDataContainer>> onServerConfigurationChangedFct)
+   void CConfigurationManager::subscribeOnServerConfigurationChanged(
+      boost::function1<void, boost::shared_ptr<shared::CDataContainer>> onServerConfigurationChangedFct)
    {
       m_onServerConfigurationChangedObservers.push_back(onServerConfigurationChangedFct);
    }
@@ -129,19 +131,19 @@ namespace dataAccessLayer
    void CConfigurationManager::saveAutoDetectedLocation(const shared::CDataContainer& newLocation)
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_configurationMutex);
-      auto serverConfiguration = getServerConfiguration()->copy();
+      const auto serverConfiguration = getServerConfiguration()->copy();
 
       // Overwrite location only if not set by user
       if (serverConfiguration->get<std::string>("location.status") == "userDefined")
          return;
-      
+
       serverConfiguration->set("location.status", "autoDetected");
       serverConfiguration->set("location.latitude", newLocation.get<double>("latitude"));
       serverConfiguration->set("location.longitude", newLocation.get<double>("longitude"));
       serverConfiguration->set("location.altitude", newLocation.get<double>("altitude"));
       serverConfiguration->set("location.timezone", newLocation.get<std::string>("timezone"));
 
-      saveConfiguration("server", *serverConfiguration.get());
+      saveConfiguration("server", serverConfiguration->serialize());
       notifyServerConfigurationChanged(getServerConfiguration());
    }
 
@@ -157,10 +159,10 @@ namespace dataAccessLayer
    }
 
    void CConfigurationManager::saveConfiguration(const std::string& section,
-                                                 const shared::CDataContainer& value) const
+                                                 const std::string& value) const
    {
       boost::lock_guard<boost::recursive_mutex> lock(m_configurationMutex);
       m_configurationRequester->updateConfiguration(section,
-                                                    value.serialize());
+                                                    value);
    }
 } //namespace dataAccessLayer 

@@ -13,12 +13,7 @@ namespace communication
    class ISendMessageAsync
    {
    public:
-      //----------------------------------------------
-      ///\brief Destructor
-      //----------------------------------------------
-      virtual ~ISendMessageAsync()
-      {
-      }
+      virtual ~ISendMessageAsync() = default;
 
       //----------------------------------------------
       ///\brief                     Send a command to a keyword
@@ -37,7 +32,8 @@ namespace communication
       ///\param [in] data           The extra query data
       ///\return                    The task id
       //----------------------------------------------
-      virtual std::string sendExtraQueryAsync(int pluginId, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> data) = 0;
+      virtual std::string sendExtraQueryAsync(int pluginId,
+                                              boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> data) = 0;
 
       //----------------------------------------------
       ///\brief                     Send a manually device creation request to a plugin with a mandatory callback
@@ -47,7 +43,7 @@ namespace communication
       //----------------------------------------------
       virtual void sendManuallyDeviceCreationRequest(int pluginId,
                                                      const shared::plugin::yPluginApi::IManuallyDeviceCreationData& data,
-                                                     communication::callback::ISynchronousCallback<std::string>& callback) = 0;
+                                                     callback::ISynchronousCallback<std::string>& callback) = 0;
 
       //----------------------------------------------
       ///\brief                     Send a binding query request to a plugin with a mandatory callback
@@ -57,7 +53,7 @@ namespace communication
       //----------------------------------------------
       virtual void sendBindingQueryRequest(int pluginId,
                                            const shared::plugin::yPluginApi::IBindingQueryData& data,
-                                           communication::callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback) = 0;
+                                           callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback) = 0;
 
       //----------------------------------------------
       ///\brief                     Send a binding query request to a plugin with a mandatory callback
@@ -65,7 +61,7 @@ namespace communication
       ///\param [in] callback       The callback
       //----------------------------------------------
       virtual void sendDeviceConfigurationSchemaRequest(int deviceId,
-                                                        communication::callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback) = 0;
+                                                        callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback) = 0;
 
       //----------------------------------------------
       ///\brief                     Send a new configuration to device on a plugin
@@ -76,5 +72,3 @@ namespace communication
                                               const boost::shared_ptr<shared::CDataContainer>& configuration) = 0;
    };
 } //namespace communication
-
-

@@ -8,7 +8,7 @@ namespace pluginSystem
    //-----------------------------------------------------
    ///\brief The IDeviceCommand implementation
    //-----------------------------------------------------
-   class CDeviceCommand : public shared::plugin::yPluginApi::IDeviceCommand
+   class CDeviceCommand final : public shared::plugin::yPluginApi::IDeviceCommand
    {
    public:
       //-----------------------------------------------------
@@ -17,14 +17,10 @@ namespace pluginSystem
       ///\param[in] keyword      The target keyword
       ///\param[in] body         The details of the command (value)
       //-----------------------------------------------------
-      CDeviceCommand(const std::string& targetDevice,
-                     boost::shared_ptr<const database::entities::CKeyword> keyword,
+      CDeviceCommand(std::string targetDevice,
+                     const boost::shared_ptr<const database::entities::CKeyword>& keyword,
                      const std::string& body);
-
-      //-----------------------------------------------------
-      ///\brief               Destructor
-      //-----------------------------------------------------
-      virtual ~CDeviceCommand();
+      ~CDeviceCommand() override = default;
 
       // IDeviceCommand implementation
       const std::string& getDevice() const override;
@@ -32,7 +28,7 @@ namespace pluginSystem
       const std::string& getBody() const override;
       // [END] IDeviceCommand implementation
 
-      virtual const shared::plugin::yPluginApi::historization::IHistorizable& getHistorizableObject() const;
+      const shared::plugin::yPluginApi::historization::IHistorizable& getHistorizableObject() const;
 
    private:
       //-----------------------------------------------------
@@ -56,5 +52,3 @@ namespace pluginSystem
       CCommandHistorizer m_historizableObject;
    };
 } // namespace pluginSystem	
-
-

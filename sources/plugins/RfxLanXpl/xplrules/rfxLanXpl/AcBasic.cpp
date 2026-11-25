@@ -9,25 +9,20 @@ namespace xplrules
    namespace rfxLanXpl
    {
       DECLARE_ENUM_IMPLEMENTATION_NESTED(CAcBasic::EState, EState,
-         ((Off))
-         ((On))
-         ((Dim))
+                                         ((Off))
+                                         ((On))
+                                         ((Dim))
       );
 
       std::string CAcBasic::m_keywordAddress = "address";
       std::string CAcBasic::m_keywordUnit = "unit";
       std::string CAcBasic::m_keywordCommand = "command";
-      std::string CAcBasic::m_keywordCommandValues = "{ \"values\" : [\"on\", \"off\", \"preset\"] }";
+      std::string CAcBasic::m_keywordCommandValues = R"({ "values" : ["on", "off", "preset"] })";
       std::string CAcBasic::m_keywordLevel = "level";
       xplcore::CXplMessageSchemaIdentifier CAcBasic::m_protocol = xplcore::CXplMessageSchemaIdentifier::parse("ac.basic");
 
-      CAcBasic::CAcBasic()
-      {
-      }
-
-      CAcBasic::~CAcBasic()
-      {
-      }
+      CAcBasic::CAcBasic() = default;
+      CAcBasic::~CAcBasic() = default;
 
       // IRule implementation
       xplcore::CXplMessageSchemaIdentifier CAcBasic::getProtocol()
@@ -39,13 +34,13 @@ namespace xplrules
       {
          std::string deviceId = msg.getBodyValue(m_keywordAddress) + "-" + msg.getBodyValue(m_keywordUnit);
          std::string commercialName("ANSLUT, Chacon, DI.O, KlikAanKlikUit, NEXA, Proove, Intertechno, Düwi, HomeEasy UK/EU");
-         return CDeviceIdentifier(deviceId, commercialName, m_protocol, m_protocol);
+         return {deviceId, commercialName, m_protocol, m_protocol};
       }
 
       KeywordList CAcBasic::identifyKeywords(xplcore::CXplMessage& msg)
       {
          KeywordList keywords;
-         keywords.push_back(boost::make_shared<shared::plugin::yPluginApi::historization::CDimmable>(m_keywordCommand));
+         keywords.emplace_back(boost::make_shared<shared::plugin::yPluginApi::historization::CDimmable>(m_keywordCommand));
          return keywords;
       }
 
@@ -61,6 +56,7 @@ namespace xplrules
             EState valFromEquipment(msg.getBodyValue(m_keywordCommand));
 
             auto sw(boost::make_shared<shared::plugin::yPluginApi::historization::CDimmable>(m_keywordCommand));
+            // ReSharper disable once CppDefaultCaseNotHandledInSwitchStatement
             switch (valFromEquipment)
             {
             case EState::kOnValue:
@@ -73,9 +69,9 @@ namespace xplrules
                sw->set(boost::lexical_cast<int>(msg.getBodyValue(m_keywordLevel)));
                break;
             }
-            data.push_back(sw);
+            data.emplace_back(sw);
          }
-         catch (...)
+         catch (...) // NOLINT(bugprone-empty-catch)
          {
          }
 
@@ -96,8 +92,7 @@ namespace xplrules
 
          //check the device address is valid
          std::string address = commandData->getDevice();
-         std::vector<std::string> splittedAddress;
-         boost::split(splittedAddress, address, boost::is_any_of("-"), boost::token_compress_on);
+         std::vector<std::string> splittedAddress = shared::CStringExtension::splitAnyOfAndCompress(address, "-");
 
          if (splittedAddress.size() != 2)
          {
@@ -149,7 +144,7 @@ namespace xplrules
             //set the command
             auto s = EState::kDim;
             newMessage->addToBody(m_keywordCommand, s);
-            newMessage->addToBody(m_keywordLevel, boost::lexical_cast<std::string>(commandDetails.switchLevel()));
+            newMessage->addToBody(m_keywordLevel, std::to_string(commandDetails.switchLevel()));
          }
 
          return newMessage;
@@ -177,5 +172,3 @@ namespace xplrules
       }
    } //namespace rfxLanXpl
 } //namespace xplrules
-
-

@@ -56,8 +56,8 @@ namespace shared
             {
                //convert map to dataContainer
                CDataContainer dc;
-               for (auto i = messageDataParameters.begin(); i != messageDataParameters.end(); ++i)
-                  dc.set(i->first, i->second);
+               for (const auto& messageDataParameter : messageDataParameters)
+                  dc.set(messageDataParameter.first, messageDataParameter.second);
 
                const auto dcSerialized = dc.serialize(); //use variable to allow use of reference parameter
                setMessage(messageId, dcSerialized);

@@ -1,0 +1,18 @@
+info:
+  name: Liste des instances de plugins qui supportent la création manuelle de devices
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port}}/rest/plugin/instance/handleManuallyDeviceCreation
+  headers:
+    - name: Content-Type
+      value: application/json
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

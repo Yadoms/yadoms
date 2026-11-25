@@ -1,0 +1,68 @@
+info:
+  name: server configuration_1
+  type: http
+  seq: 2
+
+http:
+  method: DELETE
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/configurations/server
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: ""
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: server configuration
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/configurations/server
+      method: DELETE
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: ""
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "200"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "firstStart": false,
+              "location": {
+                  "status": "userDefined",
+                  "latitude": 48.853,
+                  "longitude": 2.35,
+                  "altitude": 0,
+                  "timezone": "Europe/Paris"
+              },
+              "basicAuthentication": {
+                  "active": false,
+                  "user": "admin",
+                  "password": ""
+              }
+          }
+
+docs: |-
+  Reset server configuration to default.
+
+  Returns default configuration.

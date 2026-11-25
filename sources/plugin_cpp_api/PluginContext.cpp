@@ -14,7 +14,7 @@ namespace plugin_cpp_api
 {
    CPluginContext::CPluginContext(int argc,
                                   char** argv,
-                                  boost::shared_ptr<IPlugin> plugin)
+                                  const boost::shared_ptr<IPlugin>& plugin)
       : m_commandLine(boost::make_shared<CCommandLine>(argc, argv)),
         m_plugin(plugin),
         m_returnCode(kOk)
@@ -22,13 +22,9 @@ namespace plugin_cpp_api
       shared::currentTime::Provider().setProvider(boost::make_shared<shared::currentTime::Local>());
    }
 
-   CPluginContext::~CPluginContext()
-   {
-   }
-
    void CPluginContext::run()
    {
-      auto api = boost::make_shared<CApiImplementation>();
+      const auto api = boost::make_shared<CApiImplementation>();
 
       try
       {
@@ -81,7 +77,7 @@ namespace plugin_cpp_api
       closeMessageQueues();
    }
 
-   void CPluginContext::waitDebugger(boost::shared_ptr<CApiImplementation> api) const
+   void CPluginContext::waitDebugger(const boost::shared_ptr<CApiImplementation>& api)
    {
       if (boost::filesystem::exists(api->getInformation()->getPath() / "waitForDebuggerAtStart"))
       {
@@ -109,7 +105,7 @@ namespace plugin_cpp_api
       }
    }
 
-   void CPluginContext::configureLogger(boost::shared_ptr<CApiImplementation> api)
+   void CPluginContext::configureLogger(const boost::shared_ptr<CApiImplementation>& api)
    {
       try
       {
@@ -127,7 +123,7 @@ namespace plugin_cpp_api
          std::cerr << api->getInformation()->getType() << " fail to configure log system with unknown exception" << std::endl;
       }
 
-      YADOMS_LOG_CONFIGURE("mainThread");
+      YADOMS_LOG_CONFIGURE("mainThread")
    }
 
    IPluginContext::EProcessReturnCode CPluginContext::getReturnCode() const
@@ -170,9 +166,9 @@ namespace plugin_cpp_api
       google::protobuf::ShutdownProtobufLibrary();
    }
 
-   void CPluginContext::msgReceiverThreaded(boost::shared_ptr<CApiImplementation> api) const
+   void CPluginContext::msgReceiverThreaded(const boost::shared_ptr<CApiImplementation>& api) const
    {
-      auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue->get_max_msg_size()));
+      const auto message(boost::make_shared<unsigned char[]>(m_receiveMessageQueue->get_max_msg_size()));
       const auto messageAssembler = boost::make_shared<shared::communication::SmallHeaderMessageAssembler>(m_receiveMessageQueue->get_max_msg_size());
 
       try

@@ -1,0 +1,339 @@
+info:
+  name: keywords acquisitions
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/keywords/:keywordIds/acquisitions?limit=10
+  headers:
+    - name: Content-Type
+      value: application/json
+  params:
+    - name: from-date
+      value: 20211117T172527
+      type: query
+      description: "[Optional] start date"
+      disabled: true
+    - name: to-date
+      value: 20211123T180000
+      type: query
+      description: "[Optional] end date"
+      disabled: true
+    - name: limit
+      value: "10"
+      type: query
+      description: "[Optional] Max records count"
+    - name: resolution
+      value: hour
+      type: query
+      description: "[Optional] all, hour, day, month, year ('all' by default)"
+      disabled: true
+    - name: prop
+      value: min|max
+      type: query
+      description: "[Optional] average|min|max|count (ignored if resolution set to 'all')"
+      disabled: true
+    - name: keywordIds
+      value: 179|1251|1
+      type: path
+      description: "[Optional] keyword ID list"
+  auth: inherit
+
+runtime:
+  variables:
+    - name: yadoms_ip
+      value: 127.0.0.1
+    - name: yadoms_port_v2
+      value: "8080"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: keywords min/max hourly acquisitions between 2 dates
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/keywords/7|8/acquisitions?from-date=20211117T172527&prop=min|max&resolution=hour&to-date=20211123T180000
+      method: GET
+      headers:
+        - name: Content-Type
+          value: application/json
+      params:
+        - name: from-date
+          value: 20211117T172527
+          type: query
+          description: optional
+        - name: limit
+          value: "10"
+          type: query
+          description: Max records count
+          disabled: true
+        - name: prop
+          value: min|max
+          type: query
+          description: average|min|max|count (ignored if resolution set to 'all')
+        - name: resolution
+          value: hour
+          type: query
+          description: all, hour, day, month, year (optional, 'all' by default)
+        - name: to-date
+          value: 20211123T180000
+          type: query
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "1037"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: '{"acquisitions":{"7":[{"date":"20211117T180000","min":19.533,"max":26.723},{"date":"20211123T080000","min":3.943,"max":22.222},{"date":"20211123T090000","min":3.713,"max":24.683},{"date":"20211123T100000","min":5.475,"max":23.638},{"date":"20211123T120000","min":14.525,"max":36.364},{"date":"20211123T130000","min":0.0,"max":32.815},{"date":"20211123T140000","min":0.0,"max":21.725},{"date":"20211123T150000","min":0.0,"max":31.394},{"date":"20211123T160000","min":0.0,"max":29.078},{"date":"20211123T170000","min":5.731,"max":12.418},{"date":"20211123T180000","min":0.0,"max":44.444}]},{"8":[{"date":"20211117T180000","min":95.2,"max":95.2},{"date":"20211123T080000","min":75.7,"max":80.9},{"date":"20211123T090000","min":78.4,"max":87.1},{"date":"20211123T120000","min":89.2,"max":96.6},{"date":"20211123T130000","min":87.4,"max":89.0},{"date":"20211123T140000","min":86.2,"max":93.7},{"date":"20211123T150000","min":82.8,"max":93.6},{"date":"20211123T160000","min":81.7,"max":91.7},{"date":"20211123T180000","min":86.9,"max":88.4}]}}'
+  - name: keywords last 10 acquisitions
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/keywords/7|8/acquisitions?limit=10
+      method: GET
+      headers:
+        - name: Content-Type
+          value: application/json
+      params:
+        - name: from-date
+          value: 20211117T172527
+          type: query
+          description: optional
+          disabled: true
+        - name: limit
+          value: "10"
+          type: query
+          description: Max records count
+        - name: prop
+          value: min|max
+          type: query
+          description: average|min|max|count (ignored if resolution set to 'all')
+          disabled: true
+        - name: resolution
+          value: hour
+          type: query
+          description: all, hour, day, month, year (optional, 'all' by default)
+          disabled: true
+        - name: to-date
+          value: 20211123T180000
+          type: query
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "976"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: '{"acquisitions":{"7":[{"date":"20211117T130403.398947","value":9.091},{"date":"20211117T130434.246565","value":10.598},{"date":"20211117T130504.191562","value":8.874},{"date":"20211117T131627.061522","value":0},{"date":"20211117T131657.871960","value":10.111},{"date":"20211117T131727.836821","value":19.508},{"date":"20211117T131757.825885","value":8.077},{"date":"20211117T131827.822053","value":5.751},{"date":"20211117T131857.829253","value":10.181},{"date":"20211117T131927.819884","value":7.916}]},{"8":[{"date":"20211117T130403.412034","value":88.2},{"date":"20211117T131627.081043","value":91.9},{"date":"20211117T132127.848551","value":96.5},{"date":"20211117T132627.842163","value":94},{"date":"20211117T133127.838355","value":94.8},{"date":"20211117T133627.842944","value":90},{"date":"20211117T134127.844880","value":87.7},{"date":"20211117T134627.826146","value":94.9},{"date":"20211117T135127.826732","value":91.2},{"date":"20211117T135627.831836","value":87}]}}'
+  - name: example différent types of returned values
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/keywords/:keywordIds/acquisitions?limit=10
+      method: GET
+      headers:
+        - name: Content-Type
+          value: application/json
+      params:
+        - name: from-date
+          value: 20211117T172527
+          type: query
+          description: "[Optional] start date"
+          disabled: true
+        - name: to-date
+          value: 20211123T180000
+          type: query
+          description: "[Optional] end date"
+          disabled: true
+        - name: limit
+          value: "10"
+          type: query
+          description: "[Optional] Max records count"
+        - name: resolution
+          value: hour
+          type: query
+          description: "[Optional] all, hour, day, month, year ('all' by default)"
+          disabled: true
+        - name: prop
+          value: min|max
+          type: query
+          description: "[Optional] average|min|max|count (ignored if resolution set to 'all')"
+          disabled: true
+        - name: keywordIds
+          value: 179|1251|1
+          type: path
+          description: "[Optional] keyword ID list"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: access-control-allow-origin
+          value: "*"
+        - name: server
+          value: yadoms/2.5.3
+        - name: connection
+          value: keep-alive
+        - name: content-type
+          value: application/json
+        - name: access-control-max-age
+          value: "1728000"
+        - name: access-control-allow-methods
+          value: GET, POST, OPTIONS, PATCH
+        - name: access-control-allow-headers
+          value: DNT, User-Agent, X-Requested-With, If-Modified-Since, Cache-Control, Content-Type, Range, Authorization
+        - name: content-length
+          value: "1473"
+      body:
+        type: json
+        data: |-
+          {
+            "acquisitions": [
+              {
+                "keywordId": 1,
+                "acquisitions": [
+                  {
+                    "date": "20261112T161341.572574",
+                    "value": "Running"
+                  },
+                  {
+                    "date": "20261112T135946.717973",
+                    "value": "Running"
+                  },
+                  {
+                    "date": "20261112T124140.316906",
+                    "value": "Running"
+                  },
+                  {
+                    "date": "20261112T120258.285801",
+                    "value": "Running"
+                  },
+                  {
+                    "date": "20261112T115452.820931",
+                    "value": "Running"
+                  },
+                  {
+                    "date": "20261110T155954.143559",
+                    "value": "Running"
+                  },
+                  {
+                    "date": "20261110T152427.688820",
+                    "value": "Running"
+                  },
+                  {
+                    "date": "20261109T130325.052998",
+                    "value": "Running"
+                  },
+                  {
+                    "date": "20261109T125243.557639",
+                    "value": "Running"
+                  }
+                ]
+              },
+              {
+                "keywordId": 179,
+                "acquisitions": [
+                  {
+                    "date": "20261112T160320.811499",
+                    "value": 0
+                  },
+                  {
+                    "date": "20261112T160320.271797",
+                    "value": 1
+                  },
+                  {
+                    "date": "20261112T154818.866586",
+                    "value": 0
+                  },
+                  {
+                    "date": "20261112T154818.081472",
+                    "value": 1
+                  },
+                  {
+                    "date": "20261112T134454.598920",
+                    "value": 0
+                  },
+                  {
+                    "date": "20261112T133623.269268",
+                    "value": 1
+                  },
+                  {
+                    "date": "20261112T133621.735613",
+                    "value": 0
+                  },
+                  {
+                    "date": "20261112T133312.534580",
+                    "value": 1
+                  },
+                  {
+                    "date": "20261112T115526.719071",
+                    "value": 0
+                  },
+                  {
+                    "date": "20261110T180407.947668",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "keywordId": 1251,
+                "acquisitions": [
+                  {
+                    "date": "20261112T135625.927751",
+                    "value": 0
+                  },
+                  {
+                    "date": "20261112T135625.184257",
+                    "value": 1
+                  },
+                  {
+                    "date": "20261112T135624.551748",
+                    "value": 0
+                  },
+                  {
+                    "date": "20261112T135623.833124",
+                    "value": 1
+                  },
+                  {
+                    "date": "20261112T135622.891864",
+                    "value": 0
+                  },
+                  {
+                    "date": "20261112T134501.686315",
+                    "value": 1
+                  },
+                  {
+                    "date": "20261112T133731.420958",
+                    "value": 0
+                  },
+                  {
+                    "date": "20261112T133730.366955",
+                    "value": 1
+                  },
+                  {
+                    "date": "20261112T133315.157592",
+                    "value": 0
+                  },
+                  {
+                    "date": "20261112T133314.031668",
+                    "value": 1
+                  }
+                ]
+              }
+            ]
+          }

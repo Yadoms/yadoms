@@ -20,34 +20,45 @@ namespace automation
    //-----------------------------------------------------
    ///\brief The rules manager
    //-----------------------------------------------------
-   class CRuleManager : public IRuleManager
+   class CRuleManager final : public IRuleManager
    {
    public:
       CRuleManager(boost::shared_ptr<interpreter::IManager> interpreterManager,
-                   boost::shared_ptr<database::IDataProvider> dataProvider,
+                   const boost::shared_ptr<database::IDataProvider>& dataProvider,
                    boost::shared_ptr<communication::ISendMessageAsync> pluginGateway,
                    boost::shared_ptr<dataAccessLayer::IKeywordManager> keywordAccessLayer,
                    boost::shared_ptr<dataAccessLayer::IEventLogger> eventLogger,
                    boost::shared_ptr<shared::ILocation> location,
                    boost::shared_ptr<dateTime::ITimeZoneProvider> timezoneProvider);
-      virtual ~CRuleManager();
+      ~CRuleManager() override;
 
       // IRuleManager Implementation
       void start() override;
       void stop() override;
       std::vector<std::string> getLoadedInterpreters() override;
       std::vector<std::string> getAvailableInterpreters() override;
+      std::map<std::string, bool> getInterpreters(bool includeNotAvailable) override;
+      boost::filesystem::path getInterpreterPath(const std::string& interpreterName) override;
       std::vector<boost::shared_ptr<database::entities::CRule>> getRules() const override;
-      int createRule(boost::shared_ptr<const database::entities::CRule> ruleData, const std::string& code, bool startNow = true) override;
+      std::vector<boost::shared_ptr<database::entities::CRule>> getRules(
+         const boost::optional<int>& ruleId,
+         const boost::optional<std::string>& fromName,
+         const std::set<std::string>& fromInterpreter,
+         const boost::optional<std::string>& fromEditor,
+         bool fromAutostart,
+         const std::set<database::entities::ERuleState>& fromState) override;
+      int createRule(const database::entities::CRule& ruleData,
+                     const std::string& code,
+                     bool startNow = true) override;
       boost::shared_ptr<database::entities::CRule> getRule(int id) const override;
       std::string getRuleCode(int id) const override;
       std::string getRuleLog(int id) const override;
       void deleteRuleLog(int id) const override;
       std::string getRuleTemplateCode(const std::string& interpreterName) const override;
-      void updateRule(boost::shared_ptr<const database::entities::CRule> ruleData) override;
+      void updateRule(const database::entities::CRule& ruleData) override;
       void updateRuleCode(int id, const std::string& code) override;
       void deleteRule(int id) override;
-      int duplicateRule(int idToDuplicate, const std::string & newName) override;
+      int duplicateRule(int idToDuplicate, const std::string& newName) override;
       void startAllRulesMatchingInterpreter(const std::string& interpreterName) override;
       void stopAllRulesMatchingInterpreter(const std::string& interpreterName) override;
       void deleteAllRulesMatchingInterpreter(const std::string& interpreterName) override;
@@ -58,7 +69,6 @@ namespace automation
 
 
    protected:
-
       //-----------------------------------------------------
       ///\brief               Start all rules
       //-----------------------------------------------------
@@ -128,5 +138,3 @@ namespace automation
       std::map<int, std::set<boost::shared_ptr<shared::event::CEventHandler>>> m_ruleStopNotifiers;
    };
 } // namespace automation	
-
-

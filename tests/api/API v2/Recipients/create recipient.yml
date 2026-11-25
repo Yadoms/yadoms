@@ -1,0 +1,112 @@
+info:
+  name: create recipient
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/recipients
+  body:
+    type: json
+    data: "{\r
+
+      \    \"firstName\": \"Bart\",\r
+
+      \    \"lastName\": \"Simpson\",\r
+
+      \    \"fields\": {\r
+
+      \        \"freeMobileSms|apiKey\": {\r
+
+      \            \"value\": \"XxXxXxXxXxXxXx\"\r
+
+      \        },\r
+
+      \        \"freeMobileSms|userId\": {\r
+
+      \            \"value\": \"0000000\"\r
+
+      \        },\r
+
+      \        \"system|email\": {\r
+
+      \            \"value\": \"bart.simpson@gmail.com\"\r
+
+      \        },\r
+
+      \        \"system|mobile\": {\r
+
+      \            \"value\": \"+33123456789\"\r
+
+      \        }\r
+
+      \    }\r
+
+      }"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: create recipient
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/recipients
+      method: POST
+      body:
+        type: json
+        data: "{\r
+
+          \    \"firstName\": \"Bart\",\r
+
+          \    \"lastName\": \"Simpson\",\r
+
+          \    \"fields\": {\r
+
+          \        \"freeMobileSms|apiKey\": {\r
+
+          \            \"value\": \"XxXxXxXxXxXxXx\"\r
+
+          \        },\r
+
+          \        \"freeMobileSms|userId\": {\r
+
+          \            \"value\": \"0000000\"\r
+
+          \        },\r
+
+          \        \"system|email\": {\r
+
+          \            \"value\": \"bart.simpson@gmail.com\"\r
+
+          \        },\r
+
+          \        \"system|mobile\": {\r
+
+          \            \"value\": \"+33123456789\"\r
+
+          \        }\r
+
+          \    }\r
+
+          }"
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "0"
+        - name: Location
+          value: users/7
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: text
+        data: ""
+
+docs: Creates a new user. The list of the expected fields is returned by GET users/fields end-point.

@@ -1,0 +1,941 @@
+info:
+  name: available updates
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/updates?include-prereleases
+  params:
+    - name: include-prereleases
+      value: ""
+      type: query
+      description: "[optional] include available non-releases updates (alpha, beta, rc... versions) if provided"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: available updates (releases only)
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/updates
+      method: GET
+      params:
+        - name: include-prereleases
+          value: ""
+          type: query
+          description: "[optional] include available non-releases updates (alpha, beta, rc... versions) if provided"
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "5182"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "yadoms": {
+                  "changelogUrl": "http://www.yadoms.com/downloads/update/dev/yadoms/windows/x86/changelog.md",
+                  "versions": {
+                      "installed": "2.5.1-beta.5",
+                      "older": [
+                          "2.0.1",
+                          "2.0.0"
+                      ]
+                  }
+              },
+              "plugins": {
+                  "updateable": {
+                      "IPX800": {
+                          "iconUrl": "plugins/IPX800/icon.png",
+                          "versions": {
+                              "installed": "1.0.0-rc.1",
+                              "newest": [
+                                  "5.0.0"
+                              ],
+                              "newer": [
+                                  "5.0.0"
+                              ]
+                          }
+                      },
+                      "LametricTime": {
+                          "iconUrl": "plugins/LametricTime/icon.png",
+                          "versions": {
+                              "installed": "1.0.2"
+                          }
+                      },
+                      "Linky": {
+                          "iconUrl": "plugins/Linky/icon.png",
+                          "versions": {
+                              "installed": "1.3.0"
+                          }
+                      },
+                      "MailSender": {
+                          "iconUrl": "plugins/MailSender/icon.png",
+                          "versions": {
+                              "installed": "1.2.0"
+                          }
+                      },
+                      "OrangeBusiness": {
+                          "iconUrl": "plugins/OrangeBusiness/icon.png",
+                          "versions": {
+                              "installed": "1.2.0"
+                          }
+                      },
+                      "PhilipsHue": {
+                          "iconUrl": "plugins/PhilipsHue/icon.png",
+                          "versions": {
+                              "installed": "1.1.1"
+                          }
+                      },
+                      "RfPlayer": {
+                          "iconUrl": "plugins/RfPlayer/icon.png",
+                          "versions": {
+                              "installed": "1.0.0"
+                          }
+                      },
+                      "RfxLanXpl": {
+                          "iconUrl": "plugins/RfxLanXpl/icon.png",
+                          "versions": {
+                              "installed": "1.0.0-beta"
+                          }
+                      },
+                      "Sigfox": {
+                          "iconUrl": "plugins/Sigfox/icon.png",
+                          "versions": {
+                              "installed": "1.3.0",
+                              "older": [
+                                  "1.0.0"
+                              ]
+                          }
+                      },
+                      "SomfySituo": {
+                          "iconUrl": "plugins/SomfySituo/icon.png",
+                          "versions": {
+                              "installed": "1.2.0"
+                          }
+                      },
+                      "SystemInformation": {
+                          "iconUrl": "plugins/SystemInformation/icon.png",
+                          "versions": {
+                              "installed": "1.2.0",
+                              "older": [
+                                  "1.0.0"
+                              ]
+                          }
+                      },
+                      "WES": {
+                          "iconUrl": "plugins/WES/icon.png",
+                          "versions": {
+                              "installed": "1.3.0-beta.1"
+                          }
+                      },
+                      "Weather": {
+                          "iconUrl": "plugins/Weather/icon.png",
+                          "versions": {
+                              "installed": "1.1.0"
+                          }
+                      },
+                      "WebConnectionQuality": {
+                          "iconUrl": "plugins/WebConnectionQuality/icon.png",
+                          "versions": {
+                              "installed": "2.1.0"
+                          }
+                      },
+                      "ZWave": {
+                          "iconUrl": "plugins/ZWave/icon.png",
+                          "versions": {
+                              "installed": "1.7.0",
+                              "older": [
+                                  "1.0.0"
+                              ]
+                          }
+                      },
+                      "enOcean": {
+                          "iconUrl": "plugins/enOcean/icon.png",
+                          "changelogUrl": "http://www.yadoms.com/downloads/update/dev/plugins/windows/x86/enOcean/changelog.md",
+                          "obsolete": true,
+                          "versions": {
+                              "installed": "2.0.5"
+                          }
+                      },
+                      "freeMobileSms": {
+                          "iconUrl": "plugins/freeMobileSms/icon.png",
+                          "versions": {
+                              "installed": "1.2.0"
+                          }
+                      },
+                      "httpScreen": {
+                          "iconUrl": "plugins/httpScreen/icon.png",
+                          "versions": {
+                              "installed": "1.1.0"
+                          }
+                      },
+                      "megatecUps": {
+                          "iconUrl": "plugins/megatecUps/icon.png",
+                          "versions": {
+                              "installed": "1.3.0",
+                              "older": [
+                                  "1.0.0"
+                              ]
+                          }
+                      },
+                      "rfxcom": {
+                          "iconUrl": "plugins/rfxcom/icon.png",
+                          "changelogUrl": "http://www.yadoms.com/downloads/update/dev/plugins/windows/x86/rfxcom/changelog.md",
+                          "versions": {
+                              "installed": "1.3.1",
+                              "older": [
+                                  "1.1.0",
+                                  "1.0.6",
+                                  "1.0.5",
+                                  "1.0.4",
+                                  "1.0.3"
+                              ]
+                          }
+                      },
+                      "teleinfo": {
+                          "iconUrl": "plugins/teleinfo/icon.png",
+                          "versions": {
+                              "installed": "1.3.0",
+                              "older": [
+                                  "1.0.2"
+                              ]
+                          }
+                      }
+                  },
+                  "new": {
+                      "newPlugin": {
+                          "iconUrl": "http://www.yadoms.com/downloads/update/dev/plugins/windows/x86/newPlugin/1.1.0/icon.png",
+                          "versions": {
+                              "newest": [
+                                  "1.1.0"
+                              ],
+                              "versions": [
+                                  "1.1.0",
+                                  "1.0.6",
+                                  "1.0.5",
+                                  "1.0.4"
+                              ]
+                          }
+                      }
+                  }
+              },
+              "widgets": {
+                  "updateable": {
+                      "RGB-color-picker": {
+                          "iconUrl": "widgets/RGB-color-picker/preview.png",
+                          "versions": {
+                              "installed": "1.1.2"
+                          }
+                      },
+                      "RGBW-color-picker": {
+                          "iconUrl": "widgets/RGBW-color-picker/preview.png",
+                          "versions": {
+                              "installed": "1.1.2"
+                          }
+                      },
+                      "chart": {
+                          "iconUrl": "widgets/chart/preview.png",
+                          "versions": {
+                              "installed": "1.4.0-beta.1",
+                              "older": [
+                                  "1.0.2",
+                                  "1.0.1"
+                              ]
+                          }
+                      },
+                      "clock": {
+                          "iconUrl": "widgets/clock/preview.png",
+                          "versions": {
+                              "installed": "2.0.4",
+                              "older": [
+                                  "2.0.1",
+                                  "2.0.0",
+                                  "1.0.0"
+                              ]
+                          }
+                      },
+                      "counter-display": {
+                          "iconUrl": "widgets/counter-display/preview.png",
+                          "versions": {
+                              "installed": "1.1.1"
+                          }
+                      },
+                      "curtain": {
+                          "iconUrl": "widgets/curtain/preview.png",
+                          "versions": {
+                              "installed": "1.1.0"
+                          }
+                      },
+                      "dimmer": {
+                          "iconUrl": "widgets/dimmer/preview.png",
+                          "versions": {
+                              "installed": "1.1.2"
+                          }
+                      },
+                      "gauge": {
+                          "iconUrl": "widgets/gauge/preview.png",
+                          "versions": {
+                              "installed": "1.1.2",
+                              "older": [
+                                  "1.0.0"
+                              ]
+                          }
+                      },
+                      "indicator": {
+                          "iconUrl": "widgets/indicator/preview.png",
+                          "changelogUrl": "http://www.yadoms.com/downloads/update/dev/widgets/indicator/changelog.md",
+                          "versions": {
+                              "installed": "1.1.1"
+                          }
+                      },
+                      "light": {
+                          "iconUrl": "widgets/light/preview.png",
+                          "versions": {
+                              "installed": "1.1.1"
+                          }
+                      },
+                      "moon": {
+                          "iconUrl": "widgets/moon/preview.png",
+                          "versions": {
+                              "installed": "1.1.1"
+                          }
+                      },
+                      "multicommand": {
+                          "iconUrl": "widgets/multicommand/preview.png",
+                          "versions": {
+                              "installed": "1.1.0"
+                          }
+                      },
+                      "numeric-display": {
+                          "iconUrl": "widgets/numeric-display/preview.png",
+                          "versions": {
+                              "installed": "1.3.1",
+                              "older": [
+                                  "1.0.2",
+                                  "1.0.1"
+                              ]
+                          }
+                      },
+                      "rain-gauge": {
+                          "iconUrl": "widgets/rain-gauge/preview.png",
+                          "versions": {
+                              "installed": "1.1.1"
+                          }
+                      },
+                      "shutter": {
+                          "iconUrl": "widgets/shutter/preview.png",
+                          "versions": {
+                              "installed": "1.1.1",
+                              "older": [
+                                  "1.0.2"
+                              ]
+                          }
+                      },
+                      "state-display": {
+                          "iconUrl": "widgets/state-display/preview.png",
+                          "versions": {
+                              "installed": "1.1.1"
+                          }
+                      },
+                      "switch": {
+                          "iconUrl": "widgets/switch/preview.png",
+                          "versions": {
+                              "installed": "1.3.1",
+                              "older": [
+                                  "1.0.4",
+                                  "1.0.2"
+                              ]
+                          }
+                      },
+                      "teleinfo-forecast": {
+                          "iconUrl": "widgets/teleinfo-forecast/preview.png",
+                          "versions": {
+                              "installed": "1.2.1"
+                          }
+                      },
+                      "thermometer": {
+                          "iconUrl": "widgets/thermometer/preview.png",
+                          "versions": {
+                              "installed": "1.1.2",
+                              "older": [
+                                  "1.0.1"
+                              ]
+                          }
+                      },
+                      "thermostat": {
+                          "iconUrl": "widgets/thermostat/preview.png",
+                          "versions": {
+                              "installed": "1.1.2",
+                              "older": [
+                                  "1.0.3",
+                                  "1.0.1"
+                              ]
+                          }
+                      },
+                      "weather": {
+                          "iconUrl": "widgets/weather/preview.png",
+                          "obsolete": true,
+                          "versions": {
+                              "installed": "1.2.0"
+                          }
+                      },
+                      "weather-multi": {
+                          "iconUrl": "widgets/weather-multi/preview.png",
+                          "versions": {
+                              "installed": "1.1.1"
+                          }
+                      },
+                      "wind": {
+                          "iconUrl": "widgets/wind/preview.png",
+                          "versions": {
+                              "installed": "1.3.1"
+                          }
+                      }
+                  },
+                  "new": {}
+              },
+              "scriptInterpreters": {
+                  "updateable": {
+                      "yPython3": {
+                          "iconUrl": "scriptInterpreters/yPython3/icon.png",
+                          "versions": {
+                              "installed": "1.0.3"
+                          }
+                      }
+                  },
+                  "new": {}
+              }
+          }
+  - name: available updates (include pre-releases)
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/updates?include-prereleases
+      method: GET
+      params:
+        - name: include-prereleases
+          value: ""
+          type: query
+          description: "[optional] include available non-releases updates (alpha, beta, rc... versions) if provided"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "6511"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: yadoms/2.5.1-beta.5
+      body:
+        type: json
+        data: |-
+          {
+              "yadoms": {
+                  "changelogUrl": "http://www.yadoms.com/downloads/update/dev/yadoms/windows/x86/changelog.md",
+                  "versions": {
+                      "installed": "2.5.1-beta.5",
+                      "older": [
+                          "2.0.2-beta.3",
+                          "2.0.2-beta.2",
+                          "2.0.1-beta.3",
+                          "2.0.1-beta.2",
+                          "2.0.1-beta.1",
+                          "2.0.1",
+                          "2.0.0-rc.2",
+                          "2.0.0"
+                      ]
+                  }
+              },
+              "plugins": {
+                  "updateable": {
+                      "IPX800": {
+                          "iconUrl": "plugins/IPX800/icon.png",
+                          "versions": {
+                              "installed": "1.0.0-rc.1",
+                              "newest": [
+                                  "5.0.0-beta.1"
+                              ],
+                              "newer": [
+                                  "5.0.0-beta.1",
+                                  "5.0.0"
+                              ]
+                          }
+                      },
+                      "LametricTime": {
+                          "iconUrl": "plugins/LametricTime/icon.png",
+                          "versions": {
+                              "installed": "1.0.2"
+                          }
+                      },
+                      "Linky": {
+                          "iconUrl": "plugins/Linky/icon.png",
+                          "versions": {
+                              "installed": "1.3.0",
+                              "newest": [
+                                  "18.0.2-beta.1"
+                              ],
+                              "newer": [
+                                  "18.0.2-beta.1"
+                              ],
+                              "older": [
+                                  "1.0.2-beta.1"
+                              ]
+                          }
+                      },
+                      "MailSender": {
+                          "iconUrl": "plugins/MailSender/icon.png",
+                          "versions": {
+                              "installed": "1.2.0",
+                              "older": [
+                                  "1.0.0-beta.1"
+                              ]
+                          }
+                      },
+                      "OrangeBusiness": {
+                          "iconUrl": "plugins/OrangeBusiness/icon.png",
+                          "versions": {
+                              "installed": "1.2.0"
+                          }
+                      },
+                      "PhilipsHue": {
+                          "iconUrl": "plugins/PhilipsHue/icon.png",
+                          "versions": {
+                              "installed": "1.1.1"
+                          }
+                      },
+                      "RfPlayer": {
+                          "iconUrl": "plugins/RfPlayer/icon.png",
+                          "versions": {
+                              "installed": "1.0.0"
+                          }
+                      },
+                      "RfxLanXpl": {
+                          "iconUrl": "plugins/RfxLanXpl/icon.png",
+                          "versions": {
+                              "installed": "1.0.0-beta"
+                          }
+                      },
+                      "Sigfox": {
+                          "iconUrl": "plugins/Sigfox/icon.png",
+                          "versions": {
+                              "installed": "1.3.0",
+                              "older": [
+                                  "1.0.0-rc.1",
+                                  "1.0.0"
+                              ]
+                          }
+                      },
+                      "SomfySituo": {
+                          "iconUrl": "plugins/SomfySituo/icon.png",
+                          "versions": {
+                              "installed": "1.2.0"
+                          }
+                      },
+                      "SystemInformation": {
+                          "iconUrl": "plugins/SystemInformation/icon.png",
+                          "versions": {
+                              "installed": "1.2.0",
+                              "older": [
+                                  "1.0.0-rc.1",
+                                  "1.0.0"
+                              ]
+                          }
+                      },
+                      "WES": {
+                          "iconUrl": "plugins/WES/icon.png",
+                          "versions": {
+                              "installed": "1.3.0-beta.1",
+                              "older": [
+                                  "1.0.0-beta.3"
+                              ]
+                          }
+                      },
+                      "Weather": {
+                          "iconUrl": "plugins/Weather/icon.png",
+                          "versions": {
+                              "installed": "1.1.0"
+                          }
+                      },
+                      "WebConnectionQuality": {
+                          "iconUrl": "plugins/WebConnectionQuality/icon.png",
+                          "versions": {
+                              "installed": "2.1.0"
+                          }
+                      },
+                      "ZWave": {
+                          "iconUrl": "plugins/ZWave/icon.png",
+                          "versions": {
+                              "installed": "1.7.0",
+                              "older": [
+                                  "1.0.0"
+                              ]
+                          }
+                      },
+                      "enOcean": {
+                          "iconUrl": "plugins/enOcean/icon.png",
+                          "changelogUrl": "http://www.yadoms.com/downloads/update/dev/plugins/windows/x86/enOcean/changelog.md",
+                          "obsolete": true,
+                          "versions": {
+                              "installed": "2.0.5"
+                          }
+                      },
+                      "freeMobileSms": {
+                          "iconUrl": "plugins/freeMobileSms/icon.png",
+                          "versions": {
+                              "installed": "1.2.0",
+                              "older": [
+                                  "1.0.0-beta"
+                              ]
+                          }
+                      },
+                      "httpScreen": {
+                          "iconUrl": "plugins/httpScreen/icon.png",
+                          "versions": {
+                              "installed": "1.1.0"
+                          }
+                      },
+                      "megatecUps": {
+                          "iconUrl": "plugins/megatecUps/icon.png",
+                          "versions": {
+                              "installed": "1.3.0",
+                              "older": [
+                                  "1.0.0-rc.1",
+                                  "1.0.0"
+                              ]
+                          }
+                      },
+                      "rfxcom": {
+                          "iconUrl": "plugins/rfxcom/icon.png",
+                          "changelogUrl": "http://www.yadoms.com/downloads/update/dev/plugins/windows/x86/rfxcom/changelog.md",
+                          "versions": {
+                              "installed": "1.3.1",
+                              "older": [
+                                  "1.1.1-beta.1",
+                                  "1.1.0",
+                                  "1.0.6",
+                                  "1.0.5",
+                                  "1.0.4",
+                                  "1.0.3-rc.1",
+                                  "1.0.3-beta.3",
+                                  "1.0.3-beta.2",
+                                  "1.0.3-beta.1",
+                                  "1.0.3"
+                              ]
+                          }
+                      },
+                      "teleinfo": {
+                          "iconUrl": "plugins/teleinfo/icon.png",
+                          "versions": {
+                              "installed": "1.3.0",
+                              "older": [
+                                  "1.0.2"
+                              ]
+                          }
+                      }
+                  },
+                  "new": {
+                      "newPlugin": {
+                          "iconUrl": "http://www.yadoms.com/downloads/update/dev/plugins/windows/x86/newPlugin/1.1.0/icon.png",
+                          "versions": {
+                              "newest": [
+                                  "1.1.0"
+                              ],
+                              "versions": [
+                                  "1.1.0",
+                                  "1.0.6",
+                                  "1.0.5",
+                                  "1.0.4",
+                                  "1.0.3-rc.1",
+                                  "1.0.3-beta.2",
+                                  "1.0.3-beta.1"
+                              ]
+                          }
+                      }
+                  }
+              },
+              "widgets": {
+                  "updateable": {
+                      "RGB-color-picker": {
+                          "iconUrl": "widgets/RGB-color-picker/preview.png",
+                          "versions": {
+                              "installed": "1.1.2",
+                              "older": [
+                                  "1.0.0-rc.1"
+                              ]
+                          }
+                      },
+                      "RGBW-color-picker": {
+                          "iconUrl": "widgets/RGBW-color-picker/preview.png",
+                          "versions": {
+                              "installed": "1.1.2",
+                              "older": [
+                                  "1.0.0-rc.1"
+                              ]
+                          }
+                      },
+                      "chart": {
+                          "iconUrl": "widgets/chart/preview.png",
+                          "versions": {
+                              "installed": "1.4.0-beta.1",
+                              "older": [
+                                  "1.0.3-rc.1",
+                                  "1.0.2",
+                                  "1.0.1-rc.4",
+                                  "1.0.1"
+                              ]
+                          }
+                      },
+                      "clock": {
+                          "iconUrl": "widgets/clock/preview.png",
+                          "versions": {
+                              "installed": "2.0.4",
+                              "older": [
+                                  "2.0.1",
+                                  "2.0.0-releaseCandidate",
+                                  "2.0.0-beta",
+                                  "2.0.0",
+                                  "1.0.0-releaseCandidate",
+                                  "1.0.0-beta",
+                                  "1.0.0"
+                              ]
+                          }
+                      },
+                      "counter-display": {
+                          "iconUrl": "widgets/counter-display/preview.png",
+                          "versions": {
+                              "installed": "1.1.1",
+                              "older": [
+                                  "1.0.0-rc.1"
+                              ]
+                          }
+                      },
+                      "curtain": {
+                          "iconUrl": "widgets/curtain/preview.png",
+                          "versions": {
+                              "installed": "1.1.0",
+                              "older": [
+                                  "1.0.0-rc.1",
+                                  "1.0.0-beta.1"
+                              ]
+                          }
+                      },
+                      "dimmer": {
+                          "iconUrl": "widgets/dimmer/preview.png",
+                          "versions": {
+                              "installed": "1.1.2",
+                              "older": [
+                                  "1.0.0-rc.1"
+                              ]
+                          }
+                      },
+                      "gauge": {
+                          "iconUrl": "widgets/gauge/preview.png",
+                          "versions": {
+                              "installed": "1.1.2",
+                              "older": [
+                                  "1.0.0-rc.2",
+                                  "1.0.0"
+                              ]
+                          }
+                      },
+                      "indicator": {
+                          "iconUrl": "widgets/indicator/preview.png",
+                          "changelogUrl": "http://www.yadoms.com/downloads/update/dev/widgets/indicator/changelog.md",
+                          "versions": {
+                              "installed": "1.1.1",
+                              "older": [
+                                  "1.0.1-rc.1"
+                              ]
+                          }
+                      },
+                      "light": {
+                          "iconUrl": "widgets/light/preview.png",
+                          "versions": {
+                              "installed": "1.1.1",
+                              "older": [
+                                  "1.0.3-rc.1",
+                                  "1.0.2-rc.1"
+                              ]
+                          }
+                      },
+                      "moon": {
+                          "iconUrl": "widgets/moon/preview.png",
+                          "versions": {
+                              "installed": "1.1.1",
+                              "older": [
+                                  "1.0.0-rc.1"
+                              ]
+                          }
+                      },
+                      "multicommand": {
+                          "iconUrl": "widgets/multicommand/preview.png",
+                          "versions": {
+                              "installed": "1.1.0",
+                              "older": [
+                                  "1.0.0-beta.1"
+                              ]
+                          }
+                      },
+                      "numeric-display": {
+                          "iconUrl": "widgets/numeric-display/preview.png",
+                          "versions": {
+                              "installed": "1.3.1",
+                              "older": [
+                                  "1.0.2",
+                                  "1.0.1"
+                              ]
+                          }
+                      },
+                      "rain-gauge": {
+                          "iconUrl": "widgets/rain-gauge/preview.png",
+                          "versions": {
+                              "installed": "1.1.1",
+                              "older": [
+                                  "1.0.0-rc.2"
+                              ]
+                          }
+                      },
+                      "shutter": {
+                          "iconUrl": "widgets/shutter/preview.png",
+                          "versions": {
+                              "installed": "1.1.1",
+                              "older": [
+                                  "1.0.2-rc.2",
+                                  "1.0.2-rc.1",
+                                  "1.0.2",
+                                  "1.0.1-rc.3"
+                              ]
+                          }
+                      },
+                      "state-display": {
+                          "iconUrl": "widgets/state-display/preview.png",
+                          "versions": {
+                              "installed": "1.1.1"
+                          }
+                      },
+                      "switch": {
+                          "iconUrl": "widgets/switch/preview.png",
+                          "versions": {
+                              "installed": "1.3.1",
+                              "older": [
+                                  "1.0.4-rc.1",
+                                  "1.0.4",
+                                  "1.0.2-rc.3",
+                                  "1.0.2"
+                              ]
+                          }
+                      },
+                      "teleinfo-forecast": {
+                          "iconUrl": "widgets/teleinfo-forecast/preview.png",
+                          "versions": {
+                              "installed": "1.2.1",
+                              "older": [
+                                  "1.0.0-beta.2"
+                              ]
+                          }
+                      },
+                      "thermometer": {
+                          "iconUrl": "widgets/thermometer/preview.png",
+                          "versions": {
+                              "installed": "1.1.2",
+                              "older": [
+                                  "1.0.1-rc.2",
+                                  "1.0.1-rc.1",
+                                  "1.0.1",
+                                  "1.0.0-rc.3"
+                              ]
+                          }
+                      },
+                      "thermostat": {
+                          "iconUrl": "widgets/thermostat/preview.png",
+                          "versions": {
+                              "installed": "1.1.2",
+                              "older": [
+                                  "1.0.3",
+                                  "1.0.1",
+                                  "1.0.0-rc.1"
+                              ]
+                          }
+                      },
+                      "weather": {
+                          "iconUrl": "widgets/weather/preview.png",
+                          "obsolete": true,
+                          "versions": {
+                              "installed": "1.2.0"
+                          }
+                      },
+                      "weather-multi": {
+                          "iconUrl": "widgets/weather-multi/preview.png",
+                          "versions": {
+                              "installed": "1.1.1"
+                          }
+                      },
+                      "wind": {
+                          "iconUrl": "widgets/wind/preview.png",
+                          "versions": {
+                              "installed": "1.3.1",
+                              "older": [
+                                  "1.0.0-beta.2",
+                                  "1.0.0-beta.1"
+                              ]
+                          }
+                      }
+                  },
+                  "new": {
+                      "forecast": {
+                          "iconUrl": "http://www.yadoms.com/downloads/update/dev/widgets/forecast/1.0.2-rc.4/preview.png",
+                          "versions": {
+                              "newest": [
+                                  "1.0.2-rc.4"
+                              ],
+                              "versions": [
+                                  "1.0.2-rc.4",
+                                  "1.0.2-rc.3"
+                              ]
+                          }
+                      },
+                      "newWidget": {
+                          "iconUrl": "http://www.yadoms.com/downloads/update/dev/widgets/newWidget/1.0.1-rc.1/preview.png",
+                          "versions": {
+                              "newest": [
+                                  "1.0.1-rc.1"
+                              ],
+                              "versions": [
+                                  "1.0.1-rc.1"
+                              ]
+                          }
+                      }
+                  }
+              },
+              "scriptInterpreters": {
+                  "updateable": {
+                      "yPython3": {
+                          "iconUrl": "scriptInterpreters/yPython3/icon.png",
+                          "versions": {
+                              "installed": "1.0.3"
+                          }
+                      }
+                  },
+                  "new": {}
+              }
+          }
+
+docs: |-
+  Get available updates (compare installed versions with known available updates).
+
+  This end-point don't request yadoms.com server to refresh known updates list (see /updates/forcecheck).

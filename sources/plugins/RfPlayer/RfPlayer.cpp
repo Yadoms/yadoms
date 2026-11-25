@@ -121,7 +121,7 @@ void CRfPlayer::doWork(boost::shared_ptr<yApi::IYPluginApi> api)
                }
                else
                {
-                  extraQuery->sendError("invalid paramerter");
+                  YADOMS_LOG(error) << "invalid extra query";
                }
                break;
             }

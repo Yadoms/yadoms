@@ -1,0 +1,44 @@
+info:
+  name: stop instance
+  type: http
+  seq: 10
+
+http:
+  method: POST
+  url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins-instances/:idPluginInstance/stop
+  params:
+    - name: idPluginInstance
+      value: "21"
+      type: path
+      description: "[Required] Plugin instance ID to stop"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: start instance OK
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins-instances/2/start
+      method: POST
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Connection
+          value: keep-alive
+        - name: Content-Length
+          value: "16"
+        - name: Content-Type
+          value: application/json
+        - name: Server
+          value: oatpp/1.2.5
+      body:
+        type: json
+        data: |-
+          {
+              "started": true
+          }

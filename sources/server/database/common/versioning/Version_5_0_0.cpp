@@ -15,14 +15,6 @@ namespace database
          // Modify this version to a greater value, to force update of current version
          const shared::versioning::CSemVer CVersion_5_0_0::Version(5, 0, 0);
 
-         CVersion_5_0_0::CVersion_5_0_0()
-         {
-         }
-
-         CVersion_5_0_0::~CVersion_5_0_0()
-         {
-         }
-
          void CVersion_5_0_0::checkForUpgrade(const boost::shared_ptr<IDatabaseRequester>& requester,
                                               const shared::versioning::CSemVer& currentVersion)
          {
@@ -40,6 +32,7 @@ namespace database
             }
          }
 
+         // ReSharper disable once CppInconsistentNaming
          void CVersion_5_0_0::updateFrom4_4_0(const boost::shared_ptr<IDatabaseRequester>& requester)
          {
             try
@@ -55,6 +48,7 @@ namespace database
                //Step 1 : add column
                requester->addTableColumn(CAcquisitionSummaryTable::getTableName(), "count INTEGER NOT NULL default 1");
 
+               // ReSharper disable once CppRedundantQualifier
                CVersion_4_4_0::updateDatabaseVersion(requester, Version);
 
                // Commit transaction

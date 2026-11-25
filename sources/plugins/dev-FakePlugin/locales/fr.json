@@ -45,7 +45,7 @@
     "ConditionalParameter": {
       "name": "Un paramètre conditionnel",
       "description": "Ce paramètre n'est affiché que si une condition, validée par le serveur, est remplie. Dans ce cas présent, il n'est affiché que si le serveur est exécuté sous Windows.",
-      "defaultValue": "Si vous voyez ceci, c'est que Yadoms toune sous Windows."
+      "defaultValue": "Si vous voyez ceci, c'est que Yadoms tourne sous Windows."
     },
     "SystemData": {
       "name": "Données système",
@@ -222,28 +222,16 @@
                   "description": "Exemple d'une liste dans une sous-section",
                   "content": {
                     "first": {
-                      "types": {
-                        "first": {
                           "title": "Première section",
                           "description": "Première section de la liste : vous pouvez ajouter ici d'autres données de configuration"
-                        }
-                      }
                     },
                     "second": {
-                      "types": {
-                        "second": {
                           "title": "Seconde section",
                           "description": "Seconde section de la liste : vous pouvez ajouter ici d'autres données de configuration"
-                        }
-                      }
                     },
                     "third": {
-                      "types": {
-                        "third": {
                           "title": "Troisième section",
                           "description": "Troisième section de la liste : vous pouvez ajouter ici d'autres données de configuration"
-                        }
-                      }
                     }
                   }
                 }
@@ -260,9 +248,9 @@
             "name": "Diviseur",
             "description": "Description du diviseur"
           },
-          "ArrayItem": {
-            "name": "Elément d'un tableau",
-            "description": "Tous les éléments du tableau partagent les mêmes traductions"
+          "intValue": {
+            "name": "Entier",
+            "description": "Description de l'entier"
           }
         }
       }

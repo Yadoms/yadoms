@@ -1,8 +1,10 @@
 #pragma once
 
-#include "logInternal/ILogStream.h"
+#include <string>
+#include <boost/shared_ptr.hpp>
 #include <Poco/Logger.h>
 #include <Poco/Thread.h>
+#include "logInternal/ILogStream.h"
 
 namespace shared
 {

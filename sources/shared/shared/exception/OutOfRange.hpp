@@ -2,30 +2,19 @@
 
 #include "Exception.hpp"
 
-namespace shared
+namespace shared::exception
 {
-   namespace exception
+   //--------------------------------------------------------------
+   /// \brief Exception for value out of range
+   //--------------------------------------------------------------
+   class COutOfRange : public CException
    {
-      //--------------------------------------------------------------
-      /// \brief Exception for value out of range
-      //--------------------------------------------------------------
-      class COutOfRange : public CException
+   public:
+      explicit COutOfRange(const std::string& message)
+         : CException(std::string("Out of range " + message))
       {
-      public:
-         //--------------------------------------------------------------
-         /// \brief	                        Constructor
-         //--------------------------------------------------------------
-         explicit COutOfRange(const std::string& message)
-            : CException(std::string("Out of range " + message))
-         {
-         }
+      }
 
-         //--------------------------------------------------------------
-         /// \brief      Destructor
-         //--------------------------------------------------------------
-         virtual ~COutOfRange() throw()
-         {
-         }
-      };
-   }
-} // namespace shared::exception
+      ~COutOfRange() throw() override = default;
+   };
+}
