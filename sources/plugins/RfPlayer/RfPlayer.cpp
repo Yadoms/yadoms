@@ -411,7 +411,7 @@ void CRfPlayer::processFirmwareUpdate(boost::shared_ptr<yApi::IYPluginApi>& api,
    */
 
 
-   yApi::configuration::CFile fileFromClient = extraQuery->getData()->data()->get<yApi::configuration::CFile>("fileContent");
+   yApi::configuration::CFile fileFromClient = extraQuery->getData()->data()->get<yApi::configuration::CFile>("fileContent.value");
    std::string firmwareContent = fileFromClient.getContent();
 
    const std::string stepi18nSendingFile = "customLabels.firmwareUpdate.writeFile";

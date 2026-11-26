@@ -497,14 +497,6 @@ boost::shared_ptr<web::rest::IAnswer> CPlugin::sendExtraQueryToPluginInstanceV2(
       auto queryData = request->body().empty()
                           ? shared::CDataContainer::make()
                           : shared::CDataContainer::make(request->body());
-      try
-      {
-         queryData = CConfigurationMerger::extractConfiguration(*queryData);
-      }
-      catch (const std::exception&)  // NOLINT(bugprone-empty-catch)
-      {
-         // Fail to extract data ==> Consider that data is provided without schema and send as is
-      }
 
       const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId,
                                                               boost::make_shared<pluginSystem::CExtraQueryData>(query,

@@ -2,95 +2,83 @@
 #include <shared/IDataContainable.h>
 #include <shared/dateTime/DateTimeContainer.h>
 
-namespace shared
+namespace shared::plugin::yPluginApi::configuration
 {
-   namespace plugin
+   //-----------------------------------------------------
+   ///\brief A container for file data
+   //-----------------------------------------------------
+   class CFile final : IDataContainable
    {
-      namespace yPluginApi
-      {
-         namespace configuration
-         {
-            //-----------------------------------------------------
-            ///\brief A container for file data
-            //-----------------------------------------------------
-            class CFile : IDataContainable
-            {
-            public:
-               //-----------------------------------------------------
-               ///\brief                     Constructor
-               //-----------------------------------------------------
-               explicit CFile();
+   public:
+      explicit CFile();
 
-               //-----------------------------------------------------
-               ///\brief                     Destructor
-               //-----------------------------------------------------
-               virtual ~CFile();
+      CFile(const CFile&) = delete;
+      CFile(CFile&&) = default;
+      CFile& operator=(const CFile&) = delete;
+      CFile& operator=(CFile&&) = delete;
 
-               //[START] IDataContainable implementation
-               void extractContent(CDataContainer & containerToFill) const override;
-               void fillFromContent(const CDataContainer & initialData) override;
-               void fillFromSerializedString(const std::string & serializedData) override;
-               //[END] IDataContainable implementation
+      ~CFile() override = default;
 
-               //-----------------------------------------------------
-               ///\brief  Obtain the filename
-               //-----------------------------------------------------
-               const std::string & getFileName() const;
+      //[START] IDataContainable implementation
+      void extractContent(CDataContainer& containerToFill) const override;
+      void fillFromContent(const CDataContainer& initialData) override;
+      void fillFromSerializedString(const std::string& serializedData) override;
+      //[END] IDataContainable implementation
 
-               //-----------------------------------------------------
-               ///\brief  Obtain the file size in bytes
-               //-----------------------------------------------------
-               unsigned int getSize() const;
+      //-----------------------------------------------------
+      ///\brief  Obtain the filename
+      //-----------------------------------------------------
+      const std::string& getFileName() const;
 
-               //-----------------------------------------------------
-               ///\brief  Obtain the mime type
-               //-----------------------------------------------------
-               const std::string & getMimeType() const;
+      //-----------------------------------------------------
+      ///\brief  Obtain the file size in bytes
+      //-----------------------------------------------------
+      unsigned int getSize() const;
 
-               //-----------------------------------------------------
-               ///\brief  Get the last modification date
-               //-----------------------------------------------------
-               const dateTime::CDateTimeContainer & getLastModificationDate() const;
+      //-----------------------------------------------------
+      ///\brief  Obtain the mime type
+      //-----------------------------------------------------
+      const std::string& getMimeType() const;
 
-               //-----------------------------------------------------
-               ///\brief  Get the file content (base64)
-               //-----------------------------------------------------
-               const std::string & getContentAsBase64() const;
+      //-----------------------------------------------------
+      ///\brief  Get the last modification date
+      //-----------------------------------------------------
+      const dateTime::CDateTimeContainer& getLastModificationDate() const;
 
-               //-----------------------------------------------------
-               ///\brief  Get the file content (raw, base 64 decoded)
-               //-----------------------------------------------------
-               std::string getContent() const;
+      //-----------------------------------------------------
+      ///\brief  Get the file content (base64)
+      //-----------------------------------------------------
+      const std::string& getContentAsBase64() const;
 
-            private:
-               //-----------------------------------------------------
-               ///\brief  The file name (no path provided, only filename with extension)
-               //-----------------------------------------------------
-               std::string m_filename;
+      //-----------------------------------------------------
+      ///\brief  Get the file content (raw, base 64 decoded)
+      //-----------------------------------------------------
+      std::string getContent() const;
 
-               //-----------------------------------------------------
-               ///\brief  The file size in bytes
-               //-----------------------------------------------------
-               unsigned int m_filesize;
+   private:
+      //-----------------------------------------------------
+      ///\brief  The file name (no path provided, only filename with extension)
+      //-----------------------------------------------------
+      std::string _filename;
 
-               //-----------------------------------------------------
-               ///\brief  The file mimeType
-               //-----------------------------------------------------
-               std::string m_mimeType;
+      //-----------------------------------------------------
+      ///\brief  The file size in bytes
+      //-----------------------------------------------------
+      unsigned int _filesize;
 
-               //-----------------------------------------------------
-               ///\brief  The last modification date
-               //-----------------------------------------------------
-               dateTime::CDateTimeContainer m_lastModified;
+      //-----------------------------------------------------
+      ///\brief  The file mimeType
+      //-----------------------------------------------------
+      std::string _mimeType;
 
-               //-----------------------------------------------------
-               ///\brief  The content as base64
-               //-----------------------------------------------------
-               std::string m_base64content;
-            };
-         }
-      }
-   }
-} // namespace shared::plugin::yPluginApi::configuration
+      //-----------------------------------------------------
+      ///\brief  The last modification date
+      //-----------------------------------------------------
+      dateTime::CDateTimeContainer _lastModified;
 
-
+      //-----------------------------------------------------
+      ///\brief  The content as base64
+      //-----------------------------------------------------
+      std::string _base64content;
+   };
+}

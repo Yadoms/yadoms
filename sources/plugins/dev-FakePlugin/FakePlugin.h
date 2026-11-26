@@ -14,18 +14,12 @@ namespace yApi = shared::plugin::yPluginApi;
 ///         - process a command from Yadoms
 ///         - send sensor state to Yadoms
 //--------------------------------------------------------------
-class CFakePlugin : public plugin_cpp_api::IPlugin
+class CFakePlugin final : public plugin_cpp_api::IPlugin
 {
 public:
-   //--------------------------------------------------------------
-   /// \brief	Constructor
-   //--------------------------------------------------------------
-   CFakePlugin();
+   CFakePlugin() = default;
 
-   //--------------------------------------------------------------
-   /// \brief	Destructor
-   //--------------------------------------------------------------
-   virtual ~CFakePlugin();
+   ~CFakePlugin() override = default;
 
    // IPlugin implementation
    void doWork(boost::shared_ptr<yApi::IYPluginApi> api) override;
@@ -35,12 +29,11 @@ private:
    //--------------------------------------------------------------
    /// \brief	The plugin configuration
    //--------------------------------------------------------------
-   CFakePluginConfiguration m_configuration;
+   CFakePluginConfiguration _configuration;
 
    //--------------------------------------------------------------
    /// \brief	The managed devices
    //--------------------------------------------------------------
-   std::vector<boost::shared_ptr<CFakeDynamicallyConfigurableDevice>> m_manuallyCreatedDynaConfDevices;
-   std::vector<boost::shared_ptr<CFakeAnotherConfigurableDevice>> m_manuallyCreatedStaticConfDevices;
+   std::vector<boost::shared_ptr<CFakeDynamicallyConfigurableDevice>> _manuallyCreatedDynaConfDevices;
+   std::vector<boost::shared_ptr<CFakeAnotherConfigurableDevice>> _manuallyCreatedStaticConfDevices;
 };
-

@@ -2,46 +2,40 @@
 #include "IExtraQueryData.h"
 #include <shared/DataContainer.h>
 
-namespace shared
+namespace shared::plugin::yPluginApi
 {
-   namespace plugin
+   //-----------------------------------------------------
+   ///\brief The API used for the commands on plugin
+   //-----------------------------------------------------
+   class IExtraQuery
    {
-      namespace yPluginApi
-      {
-         //-----------------------------------------------------
-         ///\brief The API used for the commands on plugin
-         //-----------------------------------------------------
-         class IExtraQuery
-         {
-         public:
-            virtual ~IExtraQuery() = default;
+   public:
+      virtual ~IExtraQuery() = default;
 
-            //-----------------------------------------------------
-            ///\brief               Get the extra query data
-            ///\return              The extra query data
-            //-----------------------------------------------------
-            virtual boost::shared_ptr<IExtraQueryData> getData() const = 0;
+      //-----------------------------------------------------
+      ///\brief               Get the extra query data
+      ///\return              The extra query data
+      //-----------------------------------------------------
+      virtual boost::shared_ptr<IExtraQueryData> getData() const = 0;
 
-            //-----------------------------------------------------
-            ///\brief Answer the request with success, providing query answer data
-            ///\param [in] data      The answer data
-            //-----------------------------------------------------
-            virtual void sendSuccess(const boost::shared_ptr<CDataContainer>& data) = 0;
+      //-----------------------------------------------------
+      ///\brief Answer the request with success, providing query answer data
+      ///\param [in] data      The answer data
+      //-----------------------------------------------------
+      virtual void sendSuccess(const boost::shared_ptr<CDataContainer>& data) = 0;
 
-            //-----------------------------------------------------
-            ///\brief Answer the request with error
-            ///\param [in] errorMessage  The error message
-            //-----------------------------------------------------
-            virtual void sendError(const std::string& errorMessage) = 0;
+      //-----------------------------------------------------
+      ///\brief Answer the request with error
+      ///\param [in] errorMessage  The error message
+      //-----------------------------------------------------
+      virtual void sendError(const std::string& errorMessage) = 0;
 
-            //-----------------------------------------------------
-            ///\brief Report the extra query progression
-            ///\param [in] progression  The progression (0->100)
-            ///\param [in] message The associated message (can be i18n string)
-            //-----------------------------------------------------
-            virtual void reportProgress(float progression,
-                                        const std::string& message) = 0;
-         };
-      }
-   }
-} // namespace shared::plugin::yPluginApi	
+      //-----------------------------------------------------
+      ///\brief Report the extra query progression
+      ///\param [in] progression  The progression (0->100)
+      ///\param [in] message The associated message (can be i18n string)
+      //-----------------------------------------------------
+      virtual void reportProgress(float progression,
+                                  const std::string& message) = 0;
+   };
+}
