@@ -3,7 +3,6 @@
 #include <boost/date_time.hpp>
 #include <boost/function.hpp>
 #include <boost/filesystem.hpp>
-#include <boost/function.hpp>
 #include <boost/optional.hpp>
 #include <boost/thread.hpp>
 #include <shared/exception/InvalidParameter.hpp>
@@ -1526,7 +1525,7 @@ namespace shared
       //--------------------------------------------------------------
       static std::string generatePath(const std::string& parameterName, char pathChar);
 
-      void replaceAllNodesByNameInternal(
+      static void replaceAllNodesByNameInternal(
          rapidjson::Value& root,
          const std::string& subkeyName,
          const std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)>& onReplaceFunction,
@@ -2165,25 +2164,25 @@ namespace shared
    {
       if (sizeof(T) == 8)
       {
-         if (std::is_signed<T>::value)
+         if (std::is_signed_v<T>)
             return convertToInt64(*ptrValue);
          return convertToUInt64(*ptrValue);
       }
       if (sizeof(T) == 4)
       {
-         if (std::is_signed<T>::value)
+         if (std::is_signed_v<T>)
             return convertToInt(*ptrValue);
          return convertToUInt(*ptrValue);
       }
       if (sizeof(T) == 2)
       {
-         if (std::is_signed<T>::value)
+         if (std::is_signed_v<T>)
             return convertToShort(*ptrValue);
          return convertToUShort(*ptrValue);
       }
       if (sizeof(T) == 1)
       {
-         if (std::is_signed<T>::value)
+         if (std::is_signed_v<T>)
             return convertToByte(*ptrValue);
          return convertToUByte(*ptrValue);
       }

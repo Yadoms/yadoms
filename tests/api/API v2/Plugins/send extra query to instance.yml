@@ -52,3 +52,64 @@ examples:
       body:
         type: text
         data: ""
+  - name: send extra query with data (form format)
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins-instances/:idPluginInstance/extra-query/:query
+      method: POST
+      params:
+        - name: idPluginInstance
+          value: "21"
+          type: path
+          description: "[Required] Plugin instance ID"
+        - name: query
+          value: textDataCommand
+          type: path
+          description: "[Required] query name (depends on plugin)"
+      body:
+        type: json
+        data: |-
+          {
+              "testValue": {
+                  "type": "string",
+                  "name": "SomeString",
+                  "description": "Description of Somestring",
+                  "value": "Hello"
+              }
+          }
+    response:
+      status: 202
+      statusText: Accepted
+      headers:
+        - name: Location
+          value: tasks/c714b887-de19-459d-9188-25be7ee45134
+      body:
+        type: text
+        data: ""
+  - name: send extra query with data (raw format)
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins-instances/:idPluginInstance/extra-query/:query
+      method: POST
+      params:
+        - name: idPluginInstance
+          value: "21"
+          type: path
+          description: "[Required] Plugin instance ID"
+        - name: query
+          value: textDataCommand
+          type: path
+          description: "[Required] query name (depends on plugin)"
+      body:
+        type: json
+        data: |-
+          {
+              "testValue": "Hello"
+          }
+    response:
+      status: 202
+      statusText: Accepted
+      headers:
+        - name: Location
+          value: tasks/c714b887-de19-459d-9188-25be7ee45134
+      body:
+        type: text
+        data: ""

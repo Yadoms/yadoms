@@ -19,7 +19,7 @@ http:
       type: query
       description: |-
         [optional] A flags combinaison of following values (returns all values if no prop provided, except for icon that must be requested alone) :
-        type|version|author|url|support-manually-created-device|support-device-removed-notification|package|icon|configurationSchema|name|description
+        type|version|author|url|supportManuallyCreatedDevice|supportDeviceRemovedNotification|icon|configuration|extraQueries|name|description
     - name: page
       value: "0"
       type: query
@@ -78,6 +78,130 @@ examples:
                       "author": "Sébastien GALLOU"
                   }
               ]
+          }
+  - name: plugin extra queries
+    request:
+      url: http://{{yadoms_ip}}:{{yadoms_port_v2}}/rest/v2/plugins?byType=dev-fakePlugin&prop=type|extraQueries
+      method: GET
+      headers:
+        - name: Accept-Language
+          value: en
+      params:
+        - name: byType
+          value: dev-fakePlugin
+          type: query
+          description: "[optional] Filter by plugin type. Returns all plugins if ommited"
+        - name: prop
+          value: type|extraQueries
+          type: query
+          description: |-
+            [optional] A flags combinaison of following values (returns all values if no prop provided, except for icon that must be requested alone) :
+            type|version|author|url|supportManuallyCreatedDevice|supportDeviceRemovedNotification|icon|configuration|extraQueries|name|description
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+              "type": "dev-fakePlugin",
+              "extraQueries": {
+                  "simpleCommand": {
+                      "iconClass": "fa fa-bolt",
+                      "name": "Simple command"
+                  },
+                  "textDataCommand": {
+                      "iconClass": "fa fa-edit",
+                      "commandData": {
+                          "testValue": {
+                              "type": "string",
+                              "name": "SomeString",
+                              "description": "Description of Somestring"
+                          }
+                      },
+                      "name": "Command with text data",
+                      "description": "This command requires data formatted as text"
+                  },
+                  "numericDataCommand": {
+                      "iconClass": "fa fa-edit",
+                      "commandData": {
+                          "testValue": {
+                              "type": "int",
+                              "name": "SomeInteger",
+                              "description": "Description of SomeInteger"
+                          }
+                      },
+                      "name": "Command with numeric data",
+                      "description": "This command requires a number"
+                  },
+                  "dataBindingCommand": {
+                      "iconClass": "fa fa-sitemap",
+                      "commandData": {
+                          "networkInterface": {
+                              "type": "enum",
+                              "values": {
+                                  "__Binding__": {
+                                      "type": "system",
+                                      "query": "networkInterfaces"
+                                  }
+                              },
+                              "name": "Network interface",
+                              "description": "Choose a network interface (from server binding)"
+                          }
+                      },
+                      "name": "Command with binded data",
+                      "description": "This command ask user to choose from a list provided from Yadoms. The list used here is the available network interfaces of system."
+                  },
+                  "dataBindingPluginCommand": {
+                      "iconClass": "fa fa-rocket",
+                      "commandData": {
+                          "dynamicSection": {
+                              "type": "section",
+                              "content": {
+                                  "__Binding__": {
+                                      "type": "plugin",
+                                      "query": "test"
+                                  },
+                                  "interval": {
+                                      "name": "Chart interval",
+                                      "description": "Used to change chart interval"
+                                  }
+                              },
+                              "name": "A dynamic section",
+                              "description": "Example of section filled by 'test' method from the plugin using binding."
+                          }
+                      },
+                      "name": "Command with binded data to plugin",
+                      "description": "This command ask user to choose from a list provided from the plugin"
+                  },
+                  "changePluginStateMessage": {
+                      "iconClass": "fa fa-recycle",
+                      "commandData": {
+                          "newStateMessage": {
+                              "type": "string",
+                              "name": "Message",
+                              "description": "The message associated to the state"
+                          }
+                      },
+                      "name": "Change plugin state",
+                      "description": "This command changes the plugin state to \"custom\" state, with the provided message"
+                  },
+                  "asyncEQwithProgression": {
+                      "iconClass": "fa fa-upload",
+                      "commandData": {
+                          "fileContent": {
+                              "type": "file",
+                              "filter": ".txt",
+                              "name": "File",
+                              "description": "The file to send to plugin"
+                          }
+                      },
+                      "name": "Asynchronous process"
+                  }
+              }
           }
   - name: one plugin
     request:

@@ -101,7 +101,7 @@
           "values": {
             "__Binding__": {
               "type": "system",
-              "query": "NetworkInterfaces"
+              "query": "networkInterfaces"
             }
           }
         },
@@ -110,7 +110,7 @@
           "values": {
             "__Binding__": {
               "type": "system",
-              "query": "NetworkInterfacesWithoutLoopback"
+              "query": "networkInterfacesWithoutLoopback"
             }
           }
         },

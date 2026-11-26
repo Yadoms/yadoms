@@ -22,17 +22,23 @@ namespace communication
       CPluginGateway(boost::shared_ptr<database::IDataProvider> dataProvider,
                      boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> acquisitionHistorizer,
                      boost::shared_ptr<pluginSystem::CManager> pluginManager);
+
+      CPluginGateway(const CPluginGateway&) = delete;
+      CPluginGateway(CPluginGateway&&) = delete;
+      CPluginGateway& operator=(const CPluginGateway&) = delete;
+      CPluginGateway& operator =(CPluginGateway&&) = delete;
+
       ~CPluginGateway() override = default;
 
       // ISendMessageAsync Implementation
       void sendKeywordCommandAsync(int keywordId,
                                    const std::string& body) override;
-      std::string sendExtraQueryAsync(int pluginId,
+      std::string sendExtraQueryAsync(int pluginInstanceId,
                                       boost::shared_ptr<shared::plugin::yPluginApi::IExtraQueryData> data) override;
-      void sendManuallyDeviceCreationRequest(int pluginId,
+      void sendManuallyDeviceCreationRequest(int pluginInstanceId,
                                              const shared::plugin::yPluginApi::IManuallyDeviceCreationData& data,
                                              callback::ISynchronousCallback<std::string>& callback) override;
-      void sendBindingQueryRequest(int pluginId,
+      void sendBindingQueryRequest(int pluginInstanceId,
                                    const shared::plugin::yPluginApi::IBindingQueryData& data,
                                    callback::ISynchronousCallback<boost::shared_ptr<shared::CDataContainer>>& callback) override;
       void sendDeviceConfigurationSchemaRequest(int deviceId,
@@ -42,19 +48,8 @@ namespace communication
       // [END] ISendMessageAsync Implementation
 
    private:
-      //----------------------------------------------
-      ///\brief  The data provider
-      //----------------------------------------------
-      boost::shared_ptr<database::IDataProvider> m_dataProvider;
-
-      //----------------------------------------------
-      ///\brief  The plugin manager
-      //----------------------------------------------
-      boost::shared_ptr<pluginSystem::CManager> m_pluginManager;
-
-      //----------------------------------------------
-      ///\brief  The acquisition historizer
-      //----------------------------------------------
-      boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> m_acquisitionHistorizer;
+      boost::shared_ptr<database::IDataProvider> _dataProvider;
+      boost::shared_ptr<pluginSystem::CManager> _pluginManager;
+      boost::shared_ptr<dataAccessLayer::IAcquisitionHistorizer> _acquisitionHistorizer;
    };
-} //namespace communication
+}

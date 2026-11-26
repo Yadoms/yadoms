@@ -104,6 +104,12 @@ namespace web::rest::service
       boost::shared_ptr<shared::CDataContainer> getPluginConfigurationSchema(
          const boost::shared_ptr<const shared::plugin::information::IInformation>& pluginInformation,
          const boost::shared_ptr<const shared::CDataContainer>& locales) const;
+      boost::shared_ptr<shared::CDataContainer> getPluginExtraQueries(
+         const boost::shared_ptr<const shared::plugin::information::IInformation>& pluginInformation,
+         const boost::shared_ptr<const shared::CDataContainer>& locales) const;
+      void applySystemBindings(
+         const boost::shared_ptr<shared::CDataContainer>& schema,
+         const boost::shared_ptr<const shared::plugin::information::IInformation>& pluginInformation) const;
       static std::string translatePluginFullState(const boost::shared_ptr<const shared::CDataContainer>& locales,
                                                   const boost::shared_ptr<const shared::CDataContainer>& fullState);
 

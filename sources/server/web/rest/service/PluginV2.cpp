@@ -107,6 +107,8 @@ boost::shared_ptr<web::rest::IAnswer> CPlugin::getAvailablePluginsV2(const boost
                pluginEntry->set("supportDeviceRemovedNotification", plugin->getSupportDeviceRemovedNotification());
             if (props->empty() || props->find("configuration") != props->end())
                pluginEntry->set("configuration", getPluginConfigurationSchema(plugin, labels));
+            if (props->empty() || props->find("extraQueries") != props->end())
+               pluginEntry->set("extraQueries", getPluginExtraQueries(plugin, labels));
 
             if (!pluginEntry->empty())
             {
@@ -318,7 +320,7 @@ boost::shared_ptr<web::rest::IAnswer> CPlugin::updatePluginsInstanceV2(const boo
             pluginToUpdate.set("configuration",
                                extractedConfiguration);
          }
-         catch (const std::exception&)
+         catch (const std::exception&)  // NOLINT(bugprone-empty-catch)
          {
             // Fail to extract configuration ==> Consider that configuration is provided without schema and record as is
          }
@@ -492,11 +494,21 @@ boost::shared_ptr<web::rest::IAnswer> CPlugin::sendExtraQueryToPluginInstanceV2(
          return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kBadRequest,
                                                  "query to plugin-instance was not provided");
 
+      auto queryData = request->body().empty()
+                          ? shared::CDataContainer::make()
+                          : shared::CDataContainer::make(request->body());
+      try
+      {
+         queryData = CConfigurationMerger::extractConfiguration(*queryData);
+      }
+      catch (const std::exception&)  // NOLINT(bugprone-empty-catch)
+      {
+         // Fail to extract data ==> Consider that data is provided without schema and send as is
+      }
+
       const auto taskId = m_messageSender.sendExtraQueryAsync(instanceId,
                                                               boost::make_shared<pluginSystem::CExtraQueryData>(query,
-                                                                 request->body().empty()
-                                                                    ? shared::CDataContainer::make()
-                                                                    : shared::CDataContainer::make(request->body())));
+                                                                 queryData));
 
       if (taskId.empty())
          return boost::make_shared<CErrorAnswer>(shared::http::ECodes::kInternalServerError,
@@ -546,7 +558,33 @@ boost::shared_ptr<shared::CDataContainer> CPlugin::getPluginConfigurationSchema(
    if (!locales->empty() && locales->exists("configurationSchema"))
       schema->mergeFrom(locales->getChild("configurationSchema"));
 
-   // Manage binding
+   applySystemBindings(schema, pluginInformation);
+
+   return schema;
+}
+
+boost::shared_ptr<shared::CDataContainer> CPlugin::getPluginExtraQueries(
+   const boost::shared_ptr<const shared::plugin::information::IInformation>& pluginInformation,
+   const boost::shared_ptr<const shared::CDataContainer>& locales) const
+{
+   const auto package = pluginInformation->getPackage();
+   if (!package->exists("extraQueries"))
+      return shared::CDataContainer::make();
+
+   auto extraQueries = package->getChild("extraQueries");
+
+   if (!locales->empty() && locales->exists("extraQueries"))
+      extraQueries->mergeFrom(locales->getChild("extraQueries"));
+
+   applySystemBindings(extraQueries, pluginInformation);
+
+   return extraQueries;
+}
+
+void CPlugin::applySystemBindings(
+   const boost::shared_ptr<shared::CDataContainer>& schema,
+   const boost::shared_ptr<const shared::plugin::information::IInformation>& pluginInformation) const
+{
    schema->replaceAllNodesByName(
       "__Binding__",
       [this, &pluginInformation](
@@ -574,9 +612,9 @@ boost::shared_ptr<shared::CDataContainer> CPlugin::getPluginConfigurationSchema(
                return CHelpers::getUsbDevicesV2(requestedUsbDevices,
                                                 m_usbDevicesLister);
             }
-            if (query == "NetworkInterfaces")
+            if (query == "networkInterfaces")
                return CHelpers::getNetworkInterfacesV2(false);
-            if (query == "NetworkInterfacesWithoutLoopback")
+            if (query == "networkInterfacesWithoutLoopback")
                return CHelpers::getNetworkInterfacesV2(true);
             if (query == "platformIsWindows")
             {
@@ -622,9 +660,6 @@ boost::shared_ptr<shared::CDataContainer> CPlugin::getPluginConfigurationSchema(
 
          return nullptr;
       });
-
-
-   return schema;
 }
 
 std::string CPlugin::translatePluginFullState(const boost::shared_ptr<const shared::CDataContainer>& locales,
@@ -649,11 +684,11 @@ std::string CPlugin::translatePluginFullState(const boost::shared_ptr<const shar
       auto message = locales->get<std::string>("customLabels.pluginState." + messageId);
 
       if (!fullState->exists("messageData"))
-         return message;
+         return message;  // NOLINT(clang-diagnostic-nrvo)
 
       const auto messageData = fullState->get<std::string>("messageData");
       if (messageData.empty())
-         return message;
+         return message;  // NOLINT(clang-diagnostic-nrvo)
 
       return shared::CStringExtension::replaceValues(message,
                                                      shared::CDataContainer(messageData).getAsMap<std::string>({}));
@@ -661,7 +696,7 @@ std::string CPlugin::translatePluginFullState(const boost::shared_ptr<const shar
    catch (const std::exception& e)
    {
       YADOMS_LOG(warning) << "Fail to translate plugin full state, message " << messageId << " : " << e.what();
-      return messageId;
+      return messageId;  // NOLINT(clang-diagnostic-nrvo)
    }
 }
 

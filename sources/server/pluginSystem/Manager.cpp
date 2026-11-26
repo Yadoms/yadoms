@@ -24,7 +24,7 @@
 
 namespace pluginSystem
 {
-   CManager::CManager(boost::shared_ptr<const IPathProvider> pathProvider,
+   CManager::CManager(const boost::shared_ptr<const IPathProvider>& pathProvider,
                       const shared::versioning::CSemVer& yadomsVersion,
                       const boost::shared_ptr<database::IDataProvider>& dataProvider,
                       const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
@@ -35,16 +35,16 @@ namespace pluginSystem
                                                yadomsVersion,
                                                location,
                                                developperMode)),
-      m_dataProvider(dataProvider),
-      m_pluginDbTable(dataProvider->getPluginRequester()),
+        m_dataProvider(dataProvider),
+        m_pluginDbTable(dataProvider->getPluginRequester()),
 #ifdef _DEBUG
-      m_qualifier(boost::make_shared<CBasicQualifier>(dataProvider->getPluginEventLoggerRequester(),
-                                                      dataAccessLayer->getEventLogger())),
+        m_qualifier(boost::make_shared<CBasicQualifier>(dataProvider->getPluginEventLoggerRequester(),
+                                                        dataAccessLayer->getEventLogger())),
 #else
-      m_qualifier(boost::make_shared<CIndicatorQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
+        m_qualifier(boost::make_shared<CIndicatorQualifier>(dataProvider->getPluginEventLoggerRequester(), dataAccessLayer->getEventLogger())),
 #endif
-      m_dataAccessLayer(dataAccessLayer),
-      m_taskScheduler(std::move(taskScheduler))
+        m_dataAccessLayer(dataAccessLayer),
+        m_taskScheduler(std::move(taskScheduler)), _location(std::move(location))
    {
    }
 
@@ -71,7 +71,7 @@ namespace pluginSystem
       // Start all plugin instances
       YADOMS_LOG(information) << "Start all plugin instances...";
       {
-         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         boost::lock_guard lock(m_runningInstancesMutex);
 
          // Initialize the plugin list (detect available plugins)
          updatePluginList();
@@ -124,7 +124,7 @@ namespace pluginSystem
 
    void CManager::startAllInstances(std::set<int>& startedInstanceIds)
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      boost::lock_guard lock(m_runningInstancesMutex);
       if (!m_runningInstances.empty())
          throw shared::exception::CException(
             "Some plugins are already started, are you sure that manager was successfully stopped ?");
@@ -169,21 +169,21 @@ namespace pluginSystem
    {
       // Plugin directory have changed, so re-build available plugins list
 
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-      boost::lock_guard<boost::recursive_mutex> lock2(m_availablePluginsMutex);
+      boost::lock_guard lock(m_runningInstancesMutex);
+      boost::lock_guard lock2(m_availablePluginsMutex);
       m_availablePlugins = m_factory->findAvailablePlugins();
    }
 
 
    IFactory::AvailablePluginMap CManager::getPluginList() const
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_availablePluginsMutex);
+      boost::lock_guard lock(m_availablePluginsMutex);
       return m_availablePlugins;
    }
 
    int CManager::getPluginQualityIndicator(const std::string& pluginName) const
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_availablePluginsMutex);
+      boost::lock_guard lock(m_availablePluginsMutex);
 
       if (m_availablePlugins.find(pluginName) == m_availablePlugins.end())
          throw CInvalidPluginException(pluginName); // Invalid plugin
@@ -193,7 +193,7 @@ namespace pluginSystem
 
    int CManager::createInstance(const database::entities::CPlugin& data)
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      boost::lock_guard lock(m_runningInstancesMutex);
 
       // First step, record instance in database, to get its ID
       const auto instanceId = m_pluginDbTable->addInstance(data);
@@ -204,26 +204,26 @@ namespace pluginSystem
       return instanceId;
    }
 
-   void CManager::deleteInstance(int id)
+   void CManager::deleteInstance(int instanceId)
    {
       try
       {
-         const auto instanceData = m_pluginDbTable->getInstance(id);
+         const auto instanceData = m_pluginDbTable->getInstance(instanceId);
          if (instanceData->Category() == database::entities::EPluginCategory::kSystem)
             return;
 
          // Stop plugin instance
-         stopInstance(id);
+         stopInstance(instanceId);
 
          // Remove in database
-         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-         m_dataAccessLayer->getDeviceManager()->removeAllDeviceForPlugin(id);
-         m_pluginDbTable->removeInstance(id);
+         boost::lock_guard lock(m_runningInstancesMutex);
+         m_dataAccessLayer->getDeviceManager()->removeAllDeviceForPlugin(instanceId);
+         m_pluginDbTable->removeInstance(instanceId);
 
          // Remove logs
          try
          {
-            remove_all(m_factory->pluginLogFile(id).parent_path());
+            remove_all(m_factory->pluginLogFile(instanceId).parent_path());
          }
          catch (boost::filesystem::filesystem_error& ex)
          {
@@ -233,7 +233,7 @@ namespace pluginSystem
          // Remove data path
          try
          {
-            remove_all(m_factory->pluginDataPath(id));
+            remove_all(m_factory->pluginDataPath(instanceId));
          }
          catch (boost::filesystem::filesystem_error& ex)
          {
@@ -242,19 +242,19 @@ namespace pluginSystem
       }
       catch (shared::exception::CException& e)
       {
-         YADOMS_LOG(error) << "Unable to delete plugin (" << id << ") : " << e.what();
-         throw shared::exception::CInvalidParameter(std::to_string(id));
+         YADOMS_LOG(error) << "Unable to delete plugin (" << instanceId << ") : " << e.what();
+         throw shared::exception::CInvalidParameter(std::to_string(instanceId));
       }
    }
 
-   std::string CManager::getInstanceLog(int id) const
+   std::string CManager::getInstanceLog(int instanceId) const
    {
       try
       {
          //ensure instance exists
-         auto instanceData = m_pluginDbTable->getInstance(id);
+         auto instanceData = m_pluginDbTable->getInstance(instanceId);
 
-         const auto logFile(m_factory->pluginLogFile(id));
+         const auto logFile(m_factory->pluginLogFile(instanceId));
 
          if (!exists(logFile))
             throw shared::exception::CInvalidParameter(logFile.string());
@@ -263,44 +263,44 @@ namespace pluginSystem
          if (!file.is_open())
             throw shared::exception::CInvalidParameter(logFile.string());
 
-         const std::istreambuf_iterator<char> eos;
-         return std::string(std::istreambuf_iterator<char>(file), eos);
+         constexpr std::istreambuf_iterator<char> eos;
+         return {std::istreambuf_iterator(file), eos};
       }
       catch (shared::exception::CException& e)
       {
-         YADOMS_LOG(error) << "Unable to get instance log for id=(" << id << ") : " << e.what();
-         throw shared::exception::CInvalidParameter(std::to_string(id));
+         YADOMS_LOG(error) << "Unable to get instance log for id=(" << instanceId << ") : " << e.what();
+         throw shared::exception::CInvalidParameter(std::to_string(instanceId));
       }
    }
 
    std::vector<boost::shared_ptr<database::entities::CPlugin>> CManager::getInstanceList(bool systemPluginIncluded) const
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      boost::lock_guard lock(m_runningInstancesMutex);
       return m_pluginDbTable->getInstances(systemPluginIncluded);
    }
 
-   boost::shared_ptr<database::entities::CPlugin> CManager::getInstance(int id) const
+   boost::shared_ptr<database::entities::CPlugin> CManager::getInstance(int instanceId) const
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-      return m_pluginDbTable->getInstance(id);
+      boost::lock_guard lock(m_runningInstancesMutex);
+      return m_pluginDbTable->getInstance(instanceId);
    }
 
-   boost::shared_ptr<IInstance> CManager::getRunningInstance(int id) const
+   boost::shared_ptr<IInstance> CManager::getRunningInstance(int instanceId) const
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      boost::lock_guard lock(m_runningInstancesMutex);
 
-      const auto instance = m_runningInstances.find(id);
+      const auto instance = m_runningInstances.find(instanceId);
       if (instance == m_runningInstances.end())
          throw CPluginException(std::string("Plugin instance #")
-                                + std::to_string(id)
-                                + " is not running");
+            + std::to_string(instanceId)
+            + " is not running");
 
       return instance->second;
    }
 
    void CManager::updateInstance(const database::entities::CPlugin& newData)
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      boost::lock_guard lock(m_runningInstancesMutex);
 
       // Check for supported modifications
       if (!newData.Id.isDefined())
@@ -314,8 +314,8 @@ namespace pluginSystem
 
       // Last, apply modifications
       if (newData.Configuration.isDefined()
-          && previousData->Configuration() != newData.Configuration())
-         // No need to notify configuration if instance was just enabled/disabled
+         && previousData->Configuration() != newData.Configuration())
+      // No need to notify configuration if instance was just enabled/disabled
       {
          // Configuration was updated, notify the instance if running
          if (m_runningInstances.find(newData.Id()) != m_runningInstances.end())
@@ -341,7 +341,7 @@ namespace pluginSystem
 
    std::vector<int> CManager::stopAllInstancesOfPlugin(const std::string& pluginName)
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      boost::lock_guard lock(m_runningInstancesMutex);
 
       // Find instances to stop
       std::vector<int> instancesToStop;
@@ -407,7 +407,7 @@ namespace pluginSystem
          const auto device = m_dataProvider->getDeviceRequester()->getDevice(deviceId);
          const auto pluginInstanceId = device->PluginId();
 
-         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         boost::lock_guard lock(m_runningInstancesMutex);
          const auto instance(getRunningInstance(pluginInstanceId));
 
          YADOMS_LOG(debug) << "Send removed device notification on device " << device->Name() << " to plugin " <<
@@ -419,15 +419,15 @@ namespace pluginSystem
       }
       catch (CPluginException&)
       {
-         // Plugin instance is not running
+         YADOMS_LOG(debug) << "Try to notify plugin instance that device is removed, but instance is not running. Ignore request.";
       }
    }
 
-   void CManager::startInstance(int id)
+   void CManager::startInstance(int instanceId)
    {
       try
       {
-         auto instanceData(getInstance(id));
+         auto instanceData(getInstance(instanceId));
 
          if (isInstanceRunning(instanceData->Id()))
             return; // Already started ==> nothing more to do
@@ -435,7 +435,7 @@ namespace pluginSystem
          YADOMS_LOG(information) << "Start plugin instance " << instanceData->DisplayName();
 
          // Create instance
-         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         boost::lock_guard lock(m_runningInstancesMutex);
          m_runningInstances[instanceData->Id()] = m_factory->createInstance(instanceData,
                                                                             m_dataProvider,
                                                                             m_dataAccessLayer,
@@ -448,35 +448,35 @@ namespace pluginSystem
       catch (shared::exception::CEmptyResult& e)
       {
          std::ostringstream oss;
-         oss << "Invalid plugin instance " << id << ", element not found in database : " << e.what();
+         oss << "Invalid plugin instance " << instanceId << ", element not found in database : " << e.what();
          YADOMS_LOG(error) << oss.str();
          throw CPluginException(oss.str());
       }
       catch (CInvalidPluginException& e)
       {
          std::ostringstream oss;
-         oss << "Invalid plugin instance " << id << ", because of an invalid plugin : " << e.what();
+         oss << "Invalid plugin instance " << instanceId << ", because of an invalid plugin : " << e.what();
          YADOMS_LOG(error) << oss.str();
          throw CPluginException(oss.str());
       }
       catch (shared::exception::COutOfRange& e)
       {
          std::ostringstream oss;
-         oss << "Invalid plugin instance " << id << "configuration, out of range : " << e.what();
+         oss << "Invalid plugin instance " << instanceId << "configuration, out of range : " << e.what();
          YADOMS_LOG(error) << oss.str();
          throw CPluginException(oss.str());
       }
       catch (std::exception& e)
       {
          std::ostringstream oss;
-         oss << "Unable to start instance " << id << " : " << e.what();
+         oss << "Unable to start instance " << instanceId << " : " << e.what();
          YADOMS_LOG(error) << oss.str();
          throw CPluginException(oss.str());
       }
       catch (...)
       {
          std::ostringstream oss;
-         oss << "Unable to start instance " << id << ", unknown error";
+         oss << "Unable to start instance " << instanceId << ", unknown error";
          YADOMS_LOG(error) << oss.str();
          throw CPluginException(oss.str());
       }
@@ -487,7 +487,7 @@ namespace pluginSystem
       YADOMS_LOG(information) << "pluginSystem::CManager stop plugins...";
 
       {
-         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         boost::lock_guard lock(m_runningInstancesMutex);
          for (const auto& runningInstance : m_runningInstances)
             requestStopInstance(runningInstance.first);
       }
@@ -496,15 +496,16 @@ namespace pluginSystem
       do
       {
          {
-            boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+            boost::lock_guard lock(m_runningInstancesMutex);
             if (m_runningInstances.empty())
                break;
          }
          boost::this_thread::yield();
-      } while (shared::currentTime::Provider().now() < timeout);
+      }
+      while (shared::currentTime::Provider().now() < timeout);
 
       {
-         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         boost::lock_guard lock(m_runningInstancesMutex);
          if (!m_runningInstances.empty())
          {
             for (const auto& instance : m_runningInstances)
@@ -515,11 +516,11 @@ namespace pluginSystem
       YADOMS_LOG(information) << "pluginSystem::CManager all plugins are stopped";
    }
 
-   void CManager::requestStopInstance(int id)
+   void CManager::requestStopInstance(int instanceId)
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      boost::lock_guard lock(m_runningInstancesMutex);
 
-      const auto instance = m_runningInstances.find(id);
+      const auto instance = m_runningInstances.find(instanceId);
 
       if (instance == m_runningInstances.end())
          return; // Already stopped ==> nothing more to do
@@ -527,13 +528,13 @@ namespace pluginSystem
       instance->second->requestStop();
    }
 
-   void CManager::killInstance(int id)
+   void CManager::killInstance(int instanceId)
    {
       boost::shared_ptr<IInstance> instance;
       {
-         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         boost::lock_guard lock(m_runningInstancesMutex);
 
-         const auto instanceIt = m_runningInstances.find(id);
+         const auto instanceIt = m_runningInstances.find(instanceId);
 
          if (instanceIt == m_runningInstances.end())
             return; // Already stopped ==> nothing more to do
@@ -545,59 +546,61 @@ namespace pluginSystem
       instance->kill();
    }
 
-   void CManager::stopInstance(int id)
+   void CManager::stopInstance(int instanceId)
    {
-      if (!isInstanceRunning(id))
+      if (!isInstanceRunning(instanceId))
          return;
 
-      requestStopInstance(id);
+      requestStopInstance(instanceId);
 
       auto timeout = shared::currentTime::Provider().now() + boost::posix_time::seconds(10);
       do
       {
          {
-            boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-            if (m_runningInstances.find(id) == m_runningInstances.end())
+            boost::lock_guard lock(m_runningInstancesMutex);
+            if (m_runningInstances.find(instanceId) == m_runningInstances.end())
                break;
          }
          boost::this_thread::yield();
-      } while (shared::currentTime::Provider().now() < timeout);
+      }
+      while (shared::currentTime::Provider().now() < timeout);
 
-      if (isInstanceRunning(id))
+      if (isInstanceRunning(instanceId))
       {
-         YADOMS_LOG(warning) << "pluginSystem::CManager, instance #" << id <<
+         YADOMS_LOG(warning) << "pluginSystem::CManager, instance #" << instanceId <<
             " didn't stop when requested. Will be killed.";
-         killInstance(id);
+         killInstance(instanceId);
       }
 
       timeout = shared::currentTime::Provider().now() + boost::posix_time::seconds(20);
       do
       {
          {
-            boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-            if (m_runningInstances.find(id) == m_runningInstances.end())
+            boost::lock_guard lock(m_runningInstancesMutex);
+            if (m_runningInstances.find(instanceId) == m_runningInstances.end())
                break;
          }
          boost::this_thread::yield();
-      } while (shared::currentTime::Provider().now() < timeout);
+      }
+      while (shared::currentTime::Provider().now() < timeout);
 
       {
-         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-         if (m_runningInstances.find(id) != m_runningInstances.end())
-            throw CPluginException(std::string("pluginSystem::CManager, unable to stop instance #") + std::to_string(id));
+         boost::lock_guard lock(m_runningInstancesMutex);
+         if (m_runningInstances.find(instanceId) != m_runningInstances.end())
+            throw CPluginException(std::string("pluginSystem::CManager, unable to stop instance #") + std::to_string(instanceId));
       }
    }
 
    void CManager::onPluginStopped(int pluginInstanceId)
    {
       boost::thread waitForPluginStoppedThread([this, pluginInstanceId]()
-                                               {
-                                                  boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      {
+         boost::lock_guard lock(m_runningInstancesMutex);
 
-                                                  const auto pluginInstance = m_runningInstances.find(pluginInstanceId);
-                                                  if (pluginInstance != m_runningInstances.end())
-                                                     m_runningInstances.erase(pluginInstance);
-                                               });
+         const auto pluginInstance = m_runningInstances.find(pluginInstanceId);
+         if (pluginInstance != m_runningInstances.end())
+            m_runningInstances.erase(pluginInstance);
+      });
    }
 
    void CManager::startInternalPlugin()
@@ -605,22 +608,22 @@ namespace pluginSystem
       startInstance(m_pluginDbTable->getSystemInstance()->Id());
    }
 
-   bool CManager::isInstanceRunning(int id) const
+   bool CManager::isInstanceRunning(int instanceId) const
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-      return m_runningInstances.find(id) != m_runningInstances.end();
+      boost::lock_guard lock(m_runningInstancesMutex);
+      return m_runningInstances.find(instanceId) != m_runningInstances.end();
    }
 
-   boost::shared_ptr<shared::CDataContainer> CManager::getInstanceFullState(int id) const
+   boost::shared_ptr<shared::CDataContainer> CManager::getInstanceFullState(int instanceId) const
    {
-      if (!isInstanceRunning(id))
+      if (!isInstanceRunning(instanceId))
       {
          // Instance is not running, so can be in error or stopped state
          boost::shared_ptr<database::entities::CDevice> device;
          try
          {
             // First find the pluginState device associated with the plugin
-            device = m_dataProvider->getDeviceRequester()->getDeviceInPlugin(id, "pluginState");
+            device = m_dataProvider->getDeviceRequester()->getDeviceInPlugin(instanceId, "pluginState");
          }
          catch (shared::exception::CEmptyResult&)
          {
@@ -636,11 +639,11 @@ namespace pluginSystem
             const shared::plugin::yPluginApi::historization::EPluginState state(
                m_dataProvider->getKeywordRequester()->getKeywordLastData(stateKw->Id));
             if (state == shared::plugin::yPluginApi::historization::EPluginState::kCustom
-                || state == shared::plugin::yPluginApi::historization::EPluginState::kError)
+               || state == shared::plugin::yPluginApi::historization::EPluginState::kError)
             {
                // In error state
                const auto customMessageIdKw = m_dataProvider
-                  ->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
+                                              ->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
                const auto defaultState = shared::CDataContainer::make();
                defaultState->set("state", state);
 
@@ -679,7 +682,7 @@ namespace pluginSystem
       try
       {
          // First find the pluginState device associated with the plugin
-         device = m_dataProvider->getDeviceRequester()->getDeviceInPlugin(id, "pluginState");
+         device = m_dataProvider->getDeviceRequester()->getDeviceInPlugin(instanceId, "pluginState");
       }
       catch (shared::exception::CEmptyResult&)
       {
@@ -693,7 +696,7 @@ namespace pluginSystem
       {
          const auto stateKw = m_dataProvider->getKeywordRequester()->getKeyword(device->Id, "state");
          const auto customMessageIdKw = m_dataProvider
-            ->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
+                                        ->getKeywordRequester()->getKeyword(device->Id, "customMessageId");
          const auto defaultState = shared::CDataContainer::make();
          defaultState->set("state", m_dataProvider->getKeywordRequester()->getKeywordLastData(stateKw->Id));
 
@@ -722,17 +725,17 @@ namespace pluginSystem
       }
    }
 
-   shared::plugin::yPluginApi::historization::EPluginState CManager::getInstanceState(int id) const
+   shared::plugin::yPluginApi::historization::EPluginState CManager::getInstanceState(int instanceId) const
    {
-      const auto fullState = getInstanceFullState(id);
+      const auto fullState = getInstanceFullState(instanceId);
       return fullState->get<shared::plugin::yPluginApi::historization::EPluginState>("state");
    }
 
-   void CManager::postCommand(int id,
+   void CManager::postCommand(int instanceId,
                               const boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand>& command) const
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-      const auto instance(getRunningInstance(id));
+      boost::lock_guard lock(m_runningInstancesMutex);
+      const auto instance(getRunningInstance(instanceId));
 
       YADOMS_LOG(debug) << "Send command " << shared::plugin::yPluginApi::IDeviceCommand::toString(command) <<
          " to plugin " << instance->about()->DisplayName();
@@ -740,10 +743,11 @@ namespace pluginSystem
       instance->postDeviceCommand(command);
    }
 
-   std::string CManager::postExtraQuery(int id, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const
+   std::string CManager::postExtraQuery(int instanceId,
+                                        const boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery>& query) const
    {
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-      const auto instance(getRunningInstance(id));
+      boost::lock_guard lock(m_runningInstancesMutex);
+      const auto instance(getRunningInstance(instanceId));
 
       YADOMS_LOG(debug) << "Send extra query " << query->getData()->query() << " to plugin " << instance->about()->DisplayName();
 
@@ -761,14 +765,14 @@ namespace pluginSystem
       return taskUid;
    }
 
-   void CManager::postManuallyDeviceCreationRequest(int id,
+   void CManager::postManuallyDeviceCreationRequest(int instanceId,
                                                     const boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request)
-      const
+   const
    {
       try
       {
-         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-         const auto instance = getRunningInstance(id);
+         boost::lock_guard lock(m_runningInstancesMutex);
+         const auto instance = getRunningInstance(instanceId);
 
          YADOMS_LOG(debug) << "Send manually device (" << request->getData().getDeviceName() << ") creation request " <<
             " to plugin " << instance->about()->DisplayName();
@@ -781,14 +785,14 @@ namespace pluginSystem
       }
    }
 
-   void CManager::postBindingQueryRequest(int id,
+   void CManager::postBindingQueryRequest(int instanceId,
                                           const boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request)
-      const
+   const
    {
       try
       {
-         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
-         const auto instance = getRunningInstance(id);
+         boost::lock_guard lock(m_runningInstancesMutex);
+         const auto instance = getRunningInstance(instanceId);
 
          YADOMS_LOG(debug) << "Send binding query " << request->getData().getQuery() << " to plugin " << instance
             ->about()->
@@ -804,7 +808,7 @@ namespace pluginSystem
 
    void CManager::postDeviceConfigurationSchemaRequest(int deviceId,
                                                        communication::callback::ISynchronousCallback<boost::shared_ptr<
-                                                       shared::CDataContainer>>&callback) const
+                                                          shared::CDataContainer>>& callback) const
    {
       const auto device = m_dataAccessLayer->getDeviceManager()->getDevice(deviceId);
 
@@ -814,7 +818,7 @@ namespace pluginSystem
 
       try
       {
-         boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+         boost::lock_guard lock(m_runningInstancesMutex);
          const boost::shared_ptr<IInstance> instance = getRunningInstance(device->PluginId);
 
          YADOMS_LOG(debug) << "Send DeviceConfigurationSchema request on device \"" << device->Name() << "\" to plugin "
@@ -825,9 +829,9 @@ namespace pluginSystem
       catch (CPluginException& e)
       {
          request->sendError(std::string("Error when requesting DeviceConfigurationSchema on device ")
-                            + device->Name()
-                            + " : "
-                            + e.what());
+            + device->Name()
+            + " : "
+            + e.what());
       }
    }
 
@@ -839,7 +843,7 @@ namespace pluginSystem
       const auto command(boost::make_shared<CSetDeviceConfiguration>(device->Name(),
                                                                      configuration));
 
-      boost::lock_guard<boost::recursive_mutex> lock(m_runningInstancesMutex);
+      boost::lock_guard lock(m_runningInstancesMutex);
       const auto instance(getRunningInstance(device->PluginId()));
 
       YADOMS_LOG(debug) << "Set configuration to device \"" << device->Name() << "\" to plugin " <<

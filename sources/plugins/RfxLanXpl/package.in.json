@@ -16,7 +16,7 @@
       "values": {
         "__Binding__": {
           "type": "system",
-          "query": "NetworkInterfacesWithoutLoopback"
+          "query": "networkInterfacesWithoutLoopback"
         }
       }
     },

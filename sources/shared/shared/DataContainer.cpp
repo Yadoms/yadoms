@@ -15,7 +15,7 @@
 
 namespace shared
 {
-   constexpr size_t MinUserBufferSize(unsigned int itemcount) { return (12 + (32 * itemcount)); }
+   static constexpr size_t minUserBufferSize(unsigned int itemcount) { return 12 + 32 * itemcount; }
 
    boost::shared_ptr<CDataContainer> CDataContainer::make()
    {
@@ -27,12 +27,14 @@ namespace shared
       return std::make_unique<CDataContainer>();
    }
 
-   boost::shared_ptr<CDataContainer> CDataContainer::make(unsigned int estimatedDataSize, unsigned int estimatedItemCount)
+   boost::shared_ptr<CDataContainer> CDataContainer::make(unsigned int estimatedDataSize,
+                                                          unsigned int estimatedItemCount)
    {
       return boost::make_shared<CDataContainer>(estimatedDataSize, estimatedItemCount);
    }
 
-   std::unique_ptr<CDataContainer> CDataContainer::makeUnique(unsigned int estimatedDataSize, unsigned int estimatedItemCount)
+   std::unique_ptr<CDataContainer> CDataContainer::makeUnique(unsigned int estimatedDataSize,
+                                                              unsigned int estimatedItemCount)
    {
       return std::make_unique<CDataContainer>(estimatedDataSize, estimatedItemCount);
    }
@@ -107,25 +109,25 @@ namespace shared
 
    CDataContainer::CDataContainer()
       : m_tree_allocator_initial_buffer(nullptr),
-      m_tree_allocator(nullptr)
+        m_tree_allocator(nullptr)
    {
       m_tree.SetObject();
    }
 
    CDataContainer::CDataContainer(unsigned int estimatedDataSize,
                                   unsigned int estimatedItemCount)
-      : m_tree_allocator_initial_buffer(operator new(estimatedDataSize + MinUserBufferSize(estimatedItemCount))),
-      m_tree_allocator(
-         new rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>(m_tree_allocator_initial_buffer,
-                                                                     estimatedDataSize + MinUserBufferSize(estimatedItemCount))),
-      m_tree(m_tree_allocator)
+      : m_tree_allocator_initial_buffer(operator new(estimatedDataSize + minUserBufferSize(estimatedItemCount))),
+        m_tree_allocator(
+           new rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>(m_tree_allocator_initial_buffer,
+                                                                       estimatedDataSize + minUserBufferSize(estimatedItemCount))),
+        m_tree(m_tree_allocator)
    {
       m_tree.SetObject();
    }
 
    CDataContainer::CDataContainer(const std::string& initialData)
       : m_tree_allocator_initial_buffer(nullptr),
-      m_tree_allocator(nullptr)
+        m_tree_allocator(nullptr)
    {
       m_tree.SetObject();
       CDataContainer::deserialize(initialData);
@@ -133,7 +135,7 @@ namespace shared
 
    CDataContainer::CDataContainer(const rapidjson::Value& d)
       : m_tree_allocator_initial_buffer(nullptr),
-      m_tree_allocator(nullptr)
+        m_tree_allocator(nullptr)
    {
       m_tree.SetObject();
       rapidjson::Document::AllocatorType& a = m_tree.GetAllocator();
@@ -142,7 +144,7 @@ namespace shared
 
    CDataContainer::CDataContainer(const rapidjson::Value* d)
       : m_tree_allocator_initial_buffer(nullptr),
-      m_tree_allocator(nullptr)
+        m_tree_allocator(nullptr)
    {
       m_tree.SetObject();
       m_tree.CopyFrom(*d, m_tree.GetAllocator(), true);
@@ -150,7 +152,7 @@ namespace shared
 
    CDataContainer::CDataContainer(rapidjson::Document& d)
       : m_tree_allocator_initial_buffer(nullptr),
-      m_tree_allocator(nullptr)
+        m_tree_allocator(nullptr)
    {
       m_tree.SetObject();
       m_tree.CopyFrom(d, m_tree.GetAllocator(), true);
@@ -159,7 +161,7 @@ namespace shared
 
    CDataContainer::CDataContainer(const std::map<std::string, std::string>& initialData)
       : m_tree_allocator_initial_buffer(nullptr),
-      m_tree_allocator(nullptr)
+        m_tree_allocator(nullptr)
    {
       m_tree.SetObject();
       for (const auto& i : initialData)
@@ -190,7 +192,7 @@ namespace shared
 
    CDataContainer::CDataContainer(const CDataContainer& initialData)
       : m_tree_allocator_initial_buffer(nullptr),
-      m_tree_allocator(nullptr)
+        m_tree_allocator(nullptr)
    {
       m_tree.SetObject();
       m_tree.CopyFrom(initialData.m_tree, m_tree.GetAllocator(), true);
@@ -198,7 +200,7 @@ namespace shared
 
    CDataContainer::CDataContainer(const rapidjson::Document& initialTree)
       : m_tree_allocator_initial_buffer(nullptr),
-      m_tree_allocator(nullptr)
+        m_tree_allocator(nullptr)
    {
       m_tree.SetObject();
       m_tree.CopyFrom(initialTree, m_tree.GetAllocator(), true);
@@ -221,19 +223,22 @@ namespace shared
    }
 
 
-   std::ostream& operator <<(std::ostream& os, const CDataContainer& dc)
+   std::ostream& operator <<(std::ostream& os,
+                             const CDataContainer& dc)
    {
       os << dc.serialize();
       return os;
    }
 
-   std::ostream& operator <<(std::ostream& os, const boost::shared_ptr<CDataContainer>& dc)
+   std::ostream& operator <<(std::ostream& os,
+                             const boost::shared_ptr<CDataContainer>& dc)
    {
       os << dc->serialize();
       return os;
    }
 
-   std::istream& operator >>(std::istream& is, CDataContainer& dc)
+   std::istream& operator >>(std::istream& is,
+                             CDataContainer& dc)
    {
       boost::lock_guard<boost::mutex> lock(dc.m_treeMutex);
 
@@ -245,7 +250,8 @@ namespace shared
       return is;
    }
 
-   std::istream& operator>>(std::istream& is, const boost::shared_ptr<CDataContainer>& dc)
+   std::istream& operator>>(std::istream& is,
+                            const boost::shared_ptr<CDataContainer>& dc)
    {
       boost::lock_guard<boost::mutex> lock(dc->m_treeMutex);
 
@@ -258,7 +264,8 @@ namespace shared
    }
 
 
-   bool CDataContainer::exists(const std::string& parameterName, const char pathChar) const
+   bool CDataContainer::exists(const std::string& parameterName,
+                               const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -267,7 +274,8 @@ namespace shared
    }
 
 
-   bool CDataContainer::containsChild(const std::string& parameterName, const char pathChar) const
+   bool CDataContainer::containsChild(const std::string& parameterName,
+                                      const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
       const rapidjson::Value* found = findValue(parameterName, pathChar);
@@ -276,7 +284,8 @@ namespace shared
       return false;
    }
 
-   bool CDataContainer::containsChildArray(const std::string& parameterName, const char pathChar) const
+   bool CDataContainer::containsChildArray(const std::string& parameterName,
+                                           const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
       const rapidjson::Value* found = findValue(parameterName, pathChar);
@@ -285,7 +294,8 @@ namespace shared
       return false;
    }
 
-   bool CDataContainer::containsValue(const std::string& parameterName, const char pathChar) const
+   bool CDataContainer::containsValue(const std::string& parameterName,
+                                      const char pathChar) const
    {
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
@@ -316,9 +326,9 @@ namespace shared
       boost::lock_guard<boost::mutex> lock(m_treeMutex);
 
       m_tree.RemoveAllMembers();
-      const rapidjson::ParseResult parseError = m_tree.Parse(data.c_str());
-      if (!parseError)
-         throw exception::CJSONParse(GetParseError_En(parseError.Code()), parseError.Offset());
+      if (const rapidjson::ParseResult parseError = m_tree.Parse(data.c_str());
+         !parseError)
+         throw exception::CJSONParse(GetParseError_En(parseError.Code()), static_cast<long>(parseError.Offset()));
    }
 
    void CDataContainer::serializeToFile(const std::string& filename) const
@@ -391,7 +401,7 @@ namespace shared
 
    void CDataContainer::printToLog(std::ostream& os) const
    {
-      os << std::endl;
+      os << '\n';
 
       rapidjson::OStreamWrapper osw(os);
       rapidjson::PrettyWriter<rapidjson::OStreamWrapper> writer(osw);
@@ -401,10 +411,11 @@ namespace shared
    void CDataContainer::printSizeToLog(std::ostream& os) const
    {
       os << "Size=" << getPointer()->GetAllocator().Size() << " ChunkSize=" << getPointer()->GetAllocator().Capacity() << " StackCapcity=" <<
-         getPointer()->GetStackCapacity() << std::endl;
+         getPointer()->GetStackCapacity() << '\n';
    }
 
-   std::string CDataContainer::generatePath(const std::string& parameterName, const char pathChar)
+   std::string CDataContainer::generatePath(const std::string& parameterName,
+                                            const char pathChar)
    {
       std::string res = "/"; //pointer is still starting with /
       const int c = static_cast<int>(parameterName.size());
@@ -421,7 +432,9 @@ namespace shared
       return res;
    }
 
-   void CDataContainer::set(const char* parameterName, const char* value, const char pathChar)
+   void CDataContainer::set(const char* parameterName,
+                            const char* value,
+                            const char pathChar)
    {
       const std::string strParamName(parameterName);
       const std::string strValue(value);
@@ -429,18 +442,22 @@ namespace shared
    }
 
 
-   void CDataContainer::set(const std::string& parameterName, const char* value, const char pathChar)
+   void CDataContainer::set(const std::string& parameterName,
+                            const char* value,
+                            const char pathChar)
    {
       const std::string strValue(value);
       set<std::string>(parameterName, strValue, pathChar);
    }
 
-   std::string CDataContainer::get(const std::string& parameterName, const char pathChar) const
+   std::string CDataContainer::get(const std::string& parameterName,
+                                   const char pathChar) const
    {
       return get<std::string>(parameterName, pathChar);
    }
 
-   std::vector<std::string> CDataContainer::getKeys(const std::string& parameterName, char pathChar) const
+   std::vector<std::string> CDataContainer::getKeys(const std::string& parameterName,
+                                                    char pathChar) const
    {
       std::vector<std::string> result;
       rapidjson::Value* found = findValue(parameterName, pathChar);
@@ -457,8 +474,8 @@ namespace shared
       const std::function<boost::shared_ptr<CDataContainer>(boost::shared_ptr<const CDataContainer>)>& onReplaceFunction,
       rapidjson::Document::AllocatorType& allocator)
    {
-      const auto memberIterator = root.FindMember(subkeyName);
-      if (memberIterator != root.MemberEnd())
+      if (const auto memberIterator = root.FindMember(subkeyName);
+         memberIterator != root.MemberEnd())
       {
          const auto newValues = onReplaceFunction(make(memberIterator->value));
          if (newValues == nullptr)
@@ -492,7 +509,8 @@ namespace shared
       replaceAllNodesByNameInternal(m_tree, subkeyName, onReplaceFunction, allocator);
    }
 
-   rapidjson::Value* CDataContainer::findValue(const std::string& parameterName, const char pathChar) const
+   rapidjson::Value* CDataContainer::findValue(const std::string& parameterName,
+                                               const char pathChar) const
    {
       if (parameterName.empty())
          return const_cast<rapidjson::Document*>(&m_tree);
@@ -543,7 +561,9 @@ namespace shared
       return boost::make_shared<CDataContainer>(*getPointer());
    }
 
-   void CDataContainer::mergeObjects(rapidjson::Value& dstObject, const rapidjson::Value& srcObject, rapidjson::Document::AllocatorType& allocator)
+   void CDataContainer::mergeObjects(rapidjson::Value& dstObject,
+                                     const rapidjson::Value& srcObject,
+                                     rapidjson::Document::AllocatorType& allocator)
    {
       for (auto srcIt = srcObject.MemberBegin(); srcIt != srcObject.MemberEnd(); ++srcIt)
       {
@@ -568,8 +588,8 @@ namespace shared
                //and many number combination can also match)
                //string cases : string should be copied (not just reference copy)
                if ((srcIt->value.GetType() == dstIt->value.GetType() && !srcIt->value.IsString()) ||
-                   (srcIt->value.IsBool() && dstIt->value.IsBool()) ||
-                   (srcIt->value.IsNumber() && dstIt->value.IsNumber()))
+                  (srcIt->value.IsBool() && dstIt->value.IsBool()) ||
+                  (srcIt->value.IsNumber() && dstIt->value.IsNumber()))
                {
                   dstIt->value.CopyFrom(srcIt->value, allocator);
                }
@@ -634,7 +654,8 @@ namespace shared
       mergeObjects(m_tree, from->m_tree, allocator);
    }
 
-   void CDataContainer::setNull(const std::string& parameterName, const char pathChar) const
+   void CDataContainer::setNull(const std::string& parameterName,
+                                const char pathChar) const
    {
       const auto v = this->findValue(parameterName, pathChar);
       if (v)
@@ -642,7 +663,8 @@ namespace shared
       throw exception::CInvalidParameter(parameterName + " : is not found");
    }
 
-   bool CDataContainer::isNull(const std::string& parameterName, const char pathChar) const
+   bool CDataContainer::isNull(const std::string& parameterName,
+                               const char pathChar) const
    {
       const auto v = this->findValue(parameterName, pathChar);
       if (v)
@@ -650,13 +672,15 @@ namespace shared
       throw exception::CInvalidParameter(parameterName + " : is not found");
    }
 
-   bool CDataContainer::createArray(const std::string& parameterName, const char pathChar)
+   bool CDataContainer::createArray(const std::string& parameterName,
+                                    const char pathChar)
    {
       const rapidjson::Value& v = rapidjson::Pointer(generatePath(parameterName, pathChar).c_str()).Create(m_tree).SetArray();
       return v.IsArray();
    }
 
-   bool CDataContainer::isArray(const std::string& parameterName, char pathChar) const
+   bool CDataContainer::isArray(const std::string& parameterName,
+                                char pathChar) const
    {
       const auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar)).Get(m_tree);
       if (ptr != nullptr && ptr->IsArray())
@@ -666,7 +690,8 @@ namespace shared
       return false;
    }
 
-   unsigned int CDataContainer::arraySize(const std::string& parameterName, char pathChar) const
+   unsigned int CDataContainer::arraySize(const std::string& parameterName,
+                                          char pathChar) const
    {
       const auto ptr = rapidjson::Pointer(generatePath(parameterName, pathChar)).Get(m_tree);
       if (ptr != nullptr && ptr->IsArray())
@@ -676,7 +701,9 @@ namespace shared
       return false;
    }
 
-   void CDataContainer::appendArray(const char* parameterName, const char* value, const char pathChar)
+   void CDataContainer::appendArray(const char* parameterName,
+                                    const char* value,
+                                    const char pathChar)
    {
       const std::string strParamName(parameterName);
       const std::string strValue(value);
@@ -684,7 +711,9 @@ namespace shared
    }
 
 
-   void CDataContainer::appendArray(const std::string& parameterName, const char* value, const char pathChar)
+   void CDataContainer::appendArray(const std::string& parameterName,
+                                    const char* value,
+                                    const char pathChar)
    {
       const std::string strValue(value);
       appendArray<std::string>(parameterName, strValue, pathChar);

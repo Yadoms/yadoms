@@ -39,17 +39,19 @@ namespace pluginSystem
       /// \param [in]   taskScheduler           The task scheduler
       /// \param [in]   developperMode          Developper mode
       //--------------------------------------------------------------
-      CManager(boost::shared_ptr<const IPathProvider> pathProvider,
-               const shared::versioning::CSemVer& yadomsVersion,
-               const boost::shared_ptr<database::IDataProvider>& dataProvider,
-               const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
-               boost::shared_ptr<shared::ILocation> location,
-               boost::shared_ptr<task::CScheduler> taskScheduler,
-               bool developperMode);
+      explicit CManager(const boost::shared_ptr<const IPathProvider>& pathProvider,
+                        const shared::versioning::CSemVer& yadomsVersion,
+                        const boost::shared_ptr<database::IDataProvider>& dataProvider,
+                        const boost::shared_ptr<dataAccessLayer::IDataAccessLayer>& dataAccessLayer,
+                        boost::shared_ptr<shared::ILocation> location,
+                        boost::shared_ptr<task::CScheduler> taskScheduler,
+                        bool developperMode);
 
-      //--------------------------------------------------------------
-      /// \brief			Destructor
-      //--------------------------------------------------------------
+      CManager(const CManager&) = delete;
+      CManager(CManager&&) = delete;
+      CManager& operator=(const CManager&) = delete;
+      CManager& operator =(CManager&&) = delete;
+
       virtual ~CManager();
 
       //--------------------------------------------------------------
@@ -90,17 +92,17 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief           Delete a plugin instance
-      /// \param [in] id   Instance to delete
+      /// \param [in]      instanceId   Instance to delete
       /// \throw           CInvalidParameter if instance id is unknown
       //--------------------------------------------------------------
-      void deleteInstance(int id);
+      void deleteInstance(int instanceId);
 
       //--------------------------------------------------------------
       /// \brief           Get the log of a plugin instance
-      /// \param [in] id   Instance to get the log
+      /// \param [in]      instanceId   Instance to get the log
       /// \return          The log of the instance, if available (empty string if not)
       //--------------------------------------------------------------
-      std::string getInstanceLog(int id) const;
+      std::string getInstanceLog(int instanceId) const;
 
       //--------------------------------------------------------------
       /// \brief           Get the plugin instances list
@@ -111,19 +113,19 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief           Get the instance configuration
-      /// \param [in] id   Instance Id
+      /// \param [in]      instanceId   Instance Id
       /// \return          The instance configuration, if available (empty string if not)
       /// \throw           CException if fails
       //--------------------------------------------------------------
-      boost::shared_ptr<database::entities::CPlugin> getInstance(int id) const;
+      boost::shared_ptr<database::entities::CPlugin> getInstance(int instanceId) const;
 
       //--------------------------------------------------------------
       /// \brief           Get a running instance
-      /// \param [in] id   Instance Id
+      /// \param [in] instanceId   Instance Id
       /// \return          The corresponding instance
       /// \throw           CPluginException if instance is unknown or not running
       //--------------------------------------------------------------
-      boost::shared_ptr<IInstance> getRunningInstance(int id) const;
+      boost::shared_ptr<IInstance> getRunningInstance(int instanceId) const;
 
       //--------------------------------------------------------------
       /// \brief           Update instance data
@@ -133,56 +135,56 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief           Start a registered instance of plugin
-      /// \param [in] id   Instance Id
-      /// \throw           CInvalidParameter if id is unknown
+      /// \param [in]      instanceId   Instance Id
+      /// \throw           CInvalidParameter if instanceId is unknown
       /// \note            Just start instance, does not modify data in base
       //--------------------------------------------------------------
-      void startInstance(int id);
+      void startInstance(int instanceId);
 
       //--------------------------------------------------------------
       /// \brief           Stop a running instance of plugin
-      /// \param [in] id   Instance Id
-      /// \throw           CInvalidParameter if id is unknown
+      /// \param [in]      instanceId   Instance Id
+      /// \throw           CInvalidParameter if instanceId is unknown
       //--------------------------------------------------------------
-      void requestStopInstance(int id);
+      void requestStopInstance(int instanceId);
 
       //-----------------------------------------------------
       ///\brief               Stop the instance and wait for stopped
-      ///\param[in] id        The instance ID
+      ///\param[in]           instanceId        The instance ID
       ///\throw               CPluginException if timeout
       //-----------------------------------------------------
-      void stopInstance(int id);
+      void stopInstance(int instanceId);
 
       //--------------------------------------------------------------
       /// \brief           Kill a running instance of plugin
-      /// \param [in] id   Instance Id
-      /// \throw           CInvalidParameter if id is unknown
+      /// \param [in]      instanceId   Instance Id
+      /// \throw           CInvalidParameter if instanceId is unknown
       //--------------------------------------------------------------
-      void killInstance(int id);
+      void killInstance(int instanceId);
 
       //--------------------------------------------------------------
       /// \brief           Get the running state of a particular instance of plugin
-      /// \param [in] id   Instance Id
+      /// \param [in]      instanceId   Instance Id
       /// \return          true if instance is running
-      /// \throw           CInvalidParameter if id is unknown
+      /// \throw           CInvalidParameter if instanceId is unknown
       //--------------------------------------------------------------
-      bool isInstanceRunning(int id) const;
+      bool isInstanceRunning(int instanceId) const;
 
       //--------------------------------------------------------------
       /// \brief           Get the state of a particular instance of plugin
-      /// \param [in] id   Instance Id
+      /// \param [in]      instanceId   Instance Id
       /// \return          The instance state
-      /// \throw           CInvalidParameter if id is unknown
+      /// \throw           CInvalidParameter if instanceId is unknown
       //--------------------------------------------------------------
-      shared::plugin::yPluginApi::historization::EPluginState getInstanceState(int id) const;
+      shared::plugin::yPluginApi::historization::EPluginState getInstanceState(int instanceId) const;
 
       //--------------------------------------------------------------
       /// \brief           Get the state of a particular instance of plugin (with message Id if any)
-      /// \param [in] id   Instance Id
+      /// \param [in]      instanceId   Instance Id
       /// \return          The instance state data
-      /// \throw           CInvalidParameter if id is unknown
+      /// \throw           CInvalidParameter if instanceId is unknown
       //--------------------------------------------------------------
-      boost::shared_ptr<shared::CDataContainer> getInstanceFullState(int id) const;
+      boost::shared_ptr<shared::CDataContainer> getInstanceFullState(int instanceId) const;
 
 
       //--------------------------------------------------------------
@@ -192,34 +194,35 @@ namespace pluginSystem
 
       //--------------------------------------------------------------
       /// \brief                 Post a command to a device on a specific plugin
-      /// \param [in] id         Plugin instance Id
+      /// \param [in] instanceId         Plugin instance Id
       /// \param [in] command    The command to post
       //--------------------------------------------------------------
-      void postCommand(int id,
+      void postCommand(int instanceId,
                        const boost::shared_ptr<const shared::plugin::yPluginApi::IDeviceCommand>& command) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post an extra command to a device on a specific plugin
-      /// \param [in] id         Plugin instance Id
+      /// \param [in] instanceId         Plugin instance Id
       /// \param [in] query      The query to post
-      /// \return                The task id
+      /// \return                The task instanceId
       //--------------------------------------------------------------
-      std::string postExtraQuery(int id, boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery> query) const;
+      std::string postExtraQuery(int instanceId,
+                                 const boost::shared_ptr<shared::plugin::yPluginApi::IExtraQuery>& query) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a manually device creation request to a plugin
-      /// \param [in] id         Plugin instance Id
+      /// \param [in] instanceId         Plugin instance Id
       /// \param [in] request    Request data
       //--------------------------------------------------------------
-      void postManuallyDeviceCreationRequest(int id,
+      void postManuallyDeviceCreationRequest(int instanceId,
                                              const boost::shared_ptr<shared::plugin::yPluginApi::IManuallyDeviceCreationRequest>& request) const;
 
       //--------------------------------------------------------------
       /// \brief                 Post a binding query request to a plugin
-      /// \param [in] id         Plugin instance Id
+      /// \param [in] instanceId         Plugin instance Id
       /// \param [in] request    Request data
       //--------------------------------------------------------------
-      void postBindingQueryRequest(int id,
+      void postBindingQueryRequest(int instanceId,
                                    const boost::shared_ptr<shared::plugin::yPluginApi::IBindingQueryRequest>& request) const;
 
       //--------------------------------------------------------------
@@ -339,5 +342,6 @@ namespace pluginSystem
       //--------------------------------------------------------------
       std::map<int, boost::shared_ptr<IInstance>> m_runningInstances;
       mutable boost::recursive_mutex m_runningInstancesMutex;
+      boost::shared_ptr<shared::ILocation> _location;
    };
 } // namespace pluginSystem
